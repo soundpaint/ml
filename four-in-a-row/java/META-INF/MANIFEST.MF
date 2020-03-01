@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Specification-Title: N.A.
+Created-By: Jürgen Reuter
+Implementation-Title: Four In a Row
+Specification-Vendor: Juergen Reuter
+Implementation-Vendor: Juergen Reuter
+Main-Class: org.soundpaint.ml.four_in_a_row.GameControl
