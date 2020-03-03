@@ -18,6 +18,7 @@
  */
 package org.soundpaint.ml.four_in_a_row;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -37,6 +38,14 @@ import javax.json.JsonValue;
 
 public class GameSerializer
 {
+  public static void serializeToFile(final GameModel game,
+                                     final File file)
+    throws IOException
+  {
+    final FileWriter writer = new FileWriter(file);
+    serializeToWriter(game, writer);
+  }
+
   public static void serializeToFile(final GameModel game,
                                      final String filePath)
     throws IOException
@@ -87,6 +96,12 @@ public class GameSerializer
       .add("min-match-count", game.getMinMatchCount())
       .add("draws", gameDraws);
       return obj.build().toString();
+  }
+
+  public static GameModel deserializeFromFile(final File file)
+    throws FileNotFoundException
+  {
+    return deserializeFromReader(new FileReader(file));
   }
 
   public static GameModel deserializeFromFile(final String filePath)

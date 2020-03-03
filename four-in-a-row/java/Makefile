@@ -48,8 +48,8 @@ tags:
 	etags *.java
 
 run: all
-	cd $(BUILD_DIR) ; java -cp $(RUN_CLASSPATH) org.soundpaint.ml.four_in_a_row.GameControl
 	#cd $(JAR_DIR) ; java -jar $(JAR_OBJ)
+	cd $(BUILD_DIR) ; java -cp $(RUN_CLASSPATH) org.soundpaint.ml.four_in_a_row.GameControl
 
 objclean:
 	- rm -rf $(BUILD_DIR)

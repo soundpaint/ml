@@ -33,16 +33,16 @@ public class GameModel
 
   private final String LINE_SEPARATOR;
   private final String id;
-  private final Integer[][] board;
-  private final int[] height;
-  private int fullColumns;
   private final int rows, columns;
   private final int minMatchCount;
+  private final Integer[][] board;
+  private final int[] height;
+  private final List<GameView> listeners;
+  private int fullColumns;
   private int drawn;
   private Player nextPlayer;
   private Player winner;
   private int winDrawRow, winDrawColumn;
-  private List<GameView> listeners;
 
   private GameModel()
   {
@@ -70,19 +70,37 @@ public class GameModel
       throw new IllegalArgumentException("minMatchCount <= 3: " +
                                          minMatchCount);
     }
+    this.LINE_SEPARATOR = createLineSeparator(columns);
     this.id = id;
     this.rows = rows;
     this.columns = columns;
     this.minMatchCount = minMatchCount;
-    this.LINE_SEPARATOR = createLineSeparator();
     board = new Integer[rows][columns];
     height = new int[columns];
+    listeners = new ArrayList<GameView>();
+    initState();
+  }
+
+  private void initState()
+  {
     fullColumns = 0;
     drawn = 0;
     nextPlayer = Player.RED;
     winner = null;
     winDrawRow = winDrawColumn = -1;
-    listeners = new ArrayList<GameView>();
+  }
+
+  public void clear()
+  {
+    initState();
+    for (int row = 0; row < rows; row++) {
+      for (int column = 0; column < columns; column++) {
+        board[row][column] = null;
+      }
+    }
+    for (int column = 0; column < columns; column++) {
+      height[column] = 0;
+    }
   }
 
   public String getId() { return id; }
@@ -245,7 +263,7 @@ public class GameModel
     return winner;
   }
 
-  private String createLineSeparator()
+  private static String createLineSeparator(final int columns)
   {
     final StringBuffer s = new StringBuffer();
     s.append("+");
