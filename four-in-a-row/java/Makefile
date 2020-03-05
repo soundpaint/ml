@@ -21,7 +21,7 @@ include ../defs.mak
 COMPILE_CLASSPATH=$(JAVA_DIR):$(BUILD_DIR):/usr/share/java/javax.json.jar
 RUN_CLASSPATH=.:/usr/share/java/javax.json.jar
 
-JAVA_SRC=$(wildcard $(JAVA_DIR)/org/soundpaint/ml/four_in_a_row/*.java)
+JAVA_SRC=$(wildcard $(JAVA_DIR)/org/soundpaint/ml/*/*.java)
 JAVA_OBJ=$(patsubst $(JAVA_DIR)/%.java,$(BUILD_DIR)/%.class,$(JAVA_SRC))
 
 JAR_OBJ=$(JAR_DIR)/ForInARow.jar
