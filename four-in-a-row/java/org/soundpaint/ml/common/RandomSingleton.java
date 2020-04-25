@@ -1,5 +1,5 @@
 /*
- * @(#)MatrixMultiplyOperation.java 1.00 20/03/08
+ * @(#)Random.java 1.00 20/04/22
  *
  * Copyright (C) 2020 Jürgen Reuter
  *
@@ -18,25 +18,13 @@
  */
 package org.soundpaint.ml.common;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 
-public class MatrixMultiplyOperation extends Operation<Matrix, Matrix>
+public class RandomSingleton
 {
-  public MatrixMultiplyOperation(final Node<Matrix, Matrix> x,
-                                 final Node<Matrix, Matrix> y)
-  {
-    super("matrixmulop", List.of(x, y));
-  }
+  private static final Random INSTANCE = new Random();
 
-  public Matrix performOperation()
-  {
-    if (inputValues.size() != 2) {
-      throw new IllegalArgumentException("require 2 operands, got: " +
-                                         inputValues.size());
-    }
-    return inputValues.get(0).dot(inputValues.get(1));
-  }
+  public static Random getInstance() { return INSTANCE; }
 }
 
 /*

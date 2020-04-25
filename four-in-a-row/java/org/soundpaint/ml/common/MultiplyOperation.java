@@ -23,28 +23,19 @@ import java.util.List;
 
 public class MultiplyOperation extends Operation<Double, Double>
 {
-  private final List<Double> inputValues;
-
   public MultiplyOperation(final Node<Double, Double> x,
                            final Node<Double, Double> y)
   {
-    super("mulop", new ArrayList<Node<Double, Double>>(List.of(x, y)));
-    inputValues = new ArrayList<Double>();
+    super("mulop", List.of(x, y));
   }
 
-  public Double compute(final List<Double> operands)
+  public Double performOperation()
   {
-    if (operands == null) {
-      throw new NullPointerException("operands");
-    }
-    if (operands.size() != 2) {
+    if (inputValues.size() != 2) {
       throw new IllegalArgumentException("require 2 operands, got: " +
-                                         operands.size());
+                                         inputValues.size());
     }
-    inputValues.clear();
-    inputValues.add(operands.get(0));
-    inputValues.add(operands.get(1));
-    return operands.get(0) * operands.get(1);
+    return inputValues.get(0) * inputValues.get(1);
   }
 }
 

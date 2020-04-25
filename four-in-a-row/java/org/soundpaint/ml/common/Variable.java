@@ -18,25 +18,31 @@
  */
 package org.soundpaint.ml.common;
 
-public class Variable<U, V> extends Node<U, V>
+public class Variable<T> extends Node<T, T>
 {
-  private V value;
+  private T value;
 
   public Variable()
   {
     this(null);
   }
 
-  public Variable(final V value)
+  public Variable(final T value)
   {
     super("variable(" + value + ")");
     this.value = value;
     Graph.getDefaultInstance().add(this);
   }
 
-  public V getValue()
+  public T getValue()
   {
     return value;
+  }
+
+  @Override
+  public void update()
+  {
+    setOutputValue(getValue());
   }
 }
 

@@ -31,14 +31,14 @@ public class Graph
   }
 
   private final List<Operation<?, ?>> operations;
-  private final List<Placeholder<?, ?>> placeholders;
-  private final List<Variable<?, ?>> variables;
+  private final List<Placeholder<?>> placeholders;
+  private final List<Variable<?>> variables;
 
   private Graph()
   {
     operations = new ArrayList<Operation<?, ?>>();
-    placeholders = new ArrayList<Placeholder<?, ?>>();
-    variables = new ArrayList<Variable<?, ?>>();
+    placeholders = new ArrayList<Placeholder<?>>();
+    variables = new ArrayList<Variable<?>>();
   }
 
   public void add(final Operation<?, ?> operation)
@@ -46,12 +46,12 @@ public class Graph
     operations.add(operation);
   }
 
-  public void add(final Placeholder<?, ?> placeholder)
+  public void add(final Placeholder<?> placeholder)
   {
     placeholders.add(placeholder);
   }
 
-  public void add(final Variable<?, ?> variable)
+  public void add(final Variable<?> variable)
   {
     variables.add(variable);
   }

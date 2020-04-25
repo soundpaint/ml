@@ -24,36 +24,56 @@ public class GraphTest
 {
   private void test1() {
     Graph.getDefaultInstance().clear();
+    final FeedDictionary feedDictionary = new FeedDictionary();
 
     // z = ax + b
-    final var a = new Variable<Double, Double>(Math.PI);
-    final var b = new Variable<Double, Double>(Math.E);
-    final var x = new Placeholder<Double, Double>();
+    final var a = new Variable<Double>(Math.PI);
+    final var b = new Variable<Double>(Math.E);
+    final var x = new Placeholder<Double>(feedDictionary);
     final var y = new MultiplyOperation(a, x);
     final var z = new AddOperation(y, b);
-    final var session = new Session<Double>();
-    final var feedDictionary =
-      new HashMap<Placeholder<Double, Double>, Double>();
+    final var session = new Session();
     feedDictionary.put(x, 100.0);
-    System.out.println(session.run(z, feedDictionary));
+    System.out.println(session.run(z));
   }
 
   private void test2() {
     Graph.getDefaultInstance().clear();
+    final FeedDictionary feedDictionary = new FeedDictionary();
 
     // z = Ax + b
     final var a =
-      new Variable<Matrix, Matrix>(new Matrix(new double[][] {{1.0, 2.0}, {3.0, 4.0}}));
+      new Variable<Matrix>(new Matrix(new double[][] {{1.0, 2.0}, {3.0, 4.0}}));
     final var b =
-      new Variable<Matrix, Matrix>(new Matrix(new double[][] {{400.0, 300.0}, {200.0, 100.0}}));
-    final var x = new Placeholder<Matrix, Matrix>();
+      new Variable<Matrix>(new Matrix(new double[][] {{400.0, 300.0}, {200.0, 100.0}}));
+    final var x = new Placeholder<Matrix>(feedDictionary);
     final var y = new MatrixMultiplyOperation(a, x);
     final var z = new MatrixAddOperation(y, b);
-    final var session = new Session<Matrix>();
-    final var feedDictionary =
-      new HashMap<Placeholder<Matrix, Matrix>, Matrix>();
+    final var session = new Session();
     feedDictionary.put(x, new Matrix(-1.0));
-    System.out.println(session.run(z, feedDictionary));
+    System.out.println(session.run(z));
+  }
+
+  private void test3() {
+    Graph.getDefaultInstance().clear();
+    RandomSingleton.getInstance().setSeed(101);
+    final FeedDictionary feedDictionary = new FeedDictionary();
+
+    final var nFeatures = 10;
+    final var nDenseNeurons = 3;
+    final var x = new Placeholder<Matrix>(feedDictionary);
+    final var w =
+      new Variable<Matrix>(Matrix.createRandomNormal(nFeatures, nDenseNeurons, 1.0, 0.0));
+    final var b = new Variable<Matrix>(Matrix.createOnes(1, nDenseNeurons));
+    final var wx = new MatrixMultiplyOperation(w, x);
+    final var z = new MatrixAddOperation(wx, b);
+    final var a =
+      new ActivationOperation<Matrix>(ActivationFunction.Standard.SIGMOID, z);
+    final var session = new Session();
+    feedDictionary.put(x, Matrix.createRandomUniform(1, nFeatures));
+    final var layerOut = session.run(a);
+    System.out.println(layerOut);
+    // expected result: array of array of 3 values between 0 and 1
   }
 
   public static void main(final String argv[])
@@ -61,6 +81,7 @@ public class GraphTest
     final GraphTest graphTest = new GraphTest();
     graphTest.test1();
     graphTest.test2();
+    graphTest.test3();
   }
 }
 

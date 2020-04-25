@@ -23,28 +23,19 @@ import java.util.List;
 
 public class MatrixAddOperation extends Operation<Matrix, Matrix>
 {
-  private final List<Matrix> inputValues;
-
   public MatrixAddOperation(final Node<Matrix, Matrix> x,
                             final Node<Matrix, Matrix> y)
   {
-    super("matrixaddop", new ArrayList<Node<Matrix, Matrix>>(List.of(x, y)));
-    inputValues = new ArrayList<Matrix>();
+    super("matrixaddop", List.of(x, y));
   }
 
-  public Matrix compute(final List<Matrix> operands)
+  public Matrix performOperation()
   {
-    if (operands == null) {
-      throw new NullPointerException("operands");
-    }
-    if (operands.size() != 2) {
+    if (inputValues.size() != 2) {
       throw new IllegalArgumentException("require 2 operands, got: " +
-                                         operands.size());
+                                         inputValues.size());
     }
-    inputValues.clear();
-    inputValues.add(operands.get(0));
-    inputValues.add(operands.get(1));
-    return operands.get(0).add(operands.get(1));
+    return inputValues.get(0).add(inputValues.get(1));
   }
 }
 

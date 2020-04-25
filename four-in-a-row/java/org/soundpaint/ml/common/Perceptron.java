@@ -29,22 +29,21 @@ public class Perceptron
   private final double[] input;
   private final double[] weight;
   private final double[] bias;
-  private ActivationFunction activationFunction;
+  private ActivationFunction<Double> activationFunction;
 
   public Perceptron(final int size,
-                    final ActivationFunction activationFunction)
+                    final ActivationFunction<Double> activationFunction)
   {
     this(size, 0, activationFunction);
   }
 
   public Perceptron(final int size, final int seed,
-                    final ActivationFunction activationFunction)
+                    final ActivationFunction<Double> activationFunction)
   {
     if (size <= 0) {
       throw new IllegalArgumentException("size must be greater than 0");
     }
     random = new Random(seed);
-    random.setSeed(seed);
     this.size = size;
     input = new double[size];
     weight = new double[size];
@@ -121,7 +120,7 @@ public class Perceptron
   }
 
   public void
-    setActivationFunction(final ActivationFunction activationFunction)
+    setActivationFunction(final ActivationFunction<Double> activationFunction)
   {
     if (activationFunction == null) {
       throw new NullPointerException("activationFunction");

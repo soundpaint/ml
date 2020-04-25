@@ -1,5 +1,5 @@
 /*
- * @(#)MatrixMultiplyOperation.java 1.00 20/03/08
+ * @(#)FeedDictionary.java 1.00 20/04/25
  *
  * Copyright (C) 2020 Jürgen Reuter
  *
@@ -18,24 +18,31 @@
  */
 package org.soundpaint.ml.common;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
-public class MatrixMultiplyOperation extends Operation<Matrix, Matrix>
+public class FeedDictionary
 {
-  public MatrixMultiplyOperation(final Node<Matrix, Matrix> x,
-                                 final Node<Matrix, Matrix> y)
+  final HashMap<Object, Object> dictionary;
+
+  public FeedDictionary()
   {
-    super("matrixmulop", List.of(x, y));
+    dictionary = new HashMap<>();
   }
 
-  public Matrix performOperation()
+  public <T>T put(final Placeholder<T> key,
+                  final T value)
   {
-    if (inputValues.size() != 2) {
-      throw new IllegalArgumentException("require 2 operands, got: " +
-                                         inputValues.size());
-    }
-    return inputValues.get(0).dot(inputValues.get(1));
+    return (T)dictionary.put(key, value);
+  }
+
+  public <T>T get(final Placeholder<T> key)
+  {
+    return (T)dictionary.get(key);
+  }
+
+  public <T>void remove(final Placeholder<T> key)
+  {
+    dictionary.remove(key);
   }
 }
 

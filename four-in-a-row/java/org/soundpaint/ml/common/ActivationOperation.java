@@ -20,13 +20,17 @@ package org.soundpaint.ml.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
-public class ActivationOperation extends Operation<Double, Double>
+// Matrices currently work only for base type Double.  Therefore,
+// ActivationFunction currently needs to have base type Double as
+// well.  This will change when the Matrices will have a variable base
+// type.
+public class ActivationOperation<T extends Matrix> extends Operation<T, T>
 {
-  private final ActivationFunction function;
-  private final List<Double> inputValues;
+  private final ActivationFunction<Double> function;
 
-  private static String getFunctionId(final ActivationFunction function)
+  private static <T> String getFunctionId(final ActivationFunction<T> function)
   {
     if (function == null) {
       throw new NullPointerException("function");
@@ -34,27 +38,28 @@ public class ActivationOperation extends Operation<Double, Double>
     return function.getId() + "op";
   }
 
-  public ActivationOperation(final ActivationFunction function,
-                             final Node<Double, Double> x)
+  public ActivationOperation(final ActivationFunction<Double> function,
+                             final Node<T, T> x)
   {
-    super(getFunctionId(function),
-          new ArrayList<Node<Double, Double>>(List.of(x)));
+    super(getFunctionId(function), List.of(x));
     this.function = function;
-    inputValues = new ArrayList<Double>();
   }
 
-  public Double compute(final List<Double> operands)
+  public T performOperation()
   {
-    if (operands == null) {
-      throw new NullPointerException("operands");
-    }
-    if (operands.size() != 1) {
+    if (inputValues.size() != 1) {
       throw new IllegalArgumentException("require 1 operand, got: " +
-                                         operands.size());
+                                         inputValues.size());
     }
-    inputValues.clear();
-    inputValues.add(operands.get(0));
-    return function.apply(operands.get(0));
+    final T inputValue = inputValues.get(0);
+    for (int row = 0; row < inputValue.getRows(); row++) {
+      for (int column = 0; column < inputValue.getColumns(); column++) {
+        final Double elementBefore = inputValue.getElementAt(row, column);
+        final Double elementAfter = function.apply(elementBefore);
+        inputValue.setElementAt(row, column, elementAfter);
+      }
+    }
+    return inputValue;
   }
 }
 

@@ -24,7 +24,7 @@ import java.util.List;
 public abstract class Node<U, V>
 {
   private final String id;
-  private List<Operation<U, V>> operations;
+  private List<Operation<V, ?>> operations;
   private V outputValue;
 
   public Node()
@@ -38,7 +38,7 @@ public abstract class Node<U, V>
       throw new NullPointerException("id");
     }
     this.id = id + "-" + Uid.createUniqueId();
-    operations = new ArrayList<Operation<U, V>>();
+    operations = new ArrayList<Operation<V, ?>>();
   }
 
   public String getId()
@@ -46,7 +46,7 @@ public abstract class Node<U, V>
     return id;
   }
 
-  public List<Operation<U, V>> getOperations()
+  public List<Operation<V, ?>> getOperations()
   {
     return operations;
   }
@@ -60,6 +60,8 @@ public abstract class Node<U, V>
   {
     return outputValue;
   }
+
+  abstract void update();
 
   public String toString()
   {

@@ -22,30 +22,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Session<T>
+public class Session
 {
-  public T run(final Operation<T, T> operation,
-               final HashMap<Placeholder<T, T>, T> feedDictionary)
+  public Object run(final Operation<?, ?> operation)
   {
-    final List<Node<T, T>> nodesPostOrder = operation.traversePostOrder();
-    for (Node<T, T> node : nodesPostOrder) {
-      if (node instanceof Placeholder) {
-        node.setOutputValue(feedDictionary.get((Placeholder<T, T>)node));
-      } else if (node instanceof Variable) {
-        node.setOutputValue(((Variable<T, T>)node).getValue());
-      } else { // (node instanceof Operation)
-        final Operation<T, T> operationNode = (Operation<T, T>)node;
-        final List<T> inputValues = new ArrayList<T>();
-        for (final Node<T, T> inputNode : operationNode.getInputNodes()) {
-          inputValues.add(inputNode.getOutputValue());
-        }
-        operationNode.setInputValues(inputValues);
-        node.setOutputValue(operationNode.compute(inputValues));
-      }
+    final List<Node<?, ?>> nodesPostOrder = operation.traversePostOrder();
+    for (Node<?, ?> node : nodesPostOrder) {
+      node.update();
       /*
       if (node.getOutputValue() instanceof List) {
         // TODO: convert list into array:
-        // node.setOutputValue(list2array((List<T>)node.getOuputValue()));
+        // node.setOutputValue(list2array((List<?>)node.getOuputValue()));
       }
       */
     }

@@ -20,17 +20,17 @@ package org.soundpaint.ml.common;
 
 public class PerceptronFactory
 {
-  private static final ActivationFunction DEFAULT_ACTIVATION_FUNCTION =
-    ActivationFunction.HYPERBOLIC_TANGENT;
+  private static final ActivationFunction<Double> DEFAULT_ACTIVATION_FUNCTION =
+    ActivationFunction.Standard.HYPERBOLIC_TANGENT;
 
-  private final ActivationFunction activationFunction;
+  private final ActivationFunction<Double> activationFunction;
 
   public PerceptronFactory()
   {
     this(DEFAULT_ACTIVATION_FUNCTION);
   }
 
-  public PerceptronFactory(final ActivationFunction activationFunction)
+  public PerceptronFactory(final ActivationFunction<Double> activationFunction)
   {
     if (activationFunction == null) {
       throw new NullPointerException("activationFunction");

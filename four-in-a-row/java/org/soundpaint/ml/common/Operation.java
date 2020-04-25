@@ -23,8 +23,8 @@ import java.util.List;
 
 public abstract class Operation<U, V> extends Node<U, V>
 {
-  private List<U> inputValues;
-  private List<Node<U, V>> inputNodes;
+  protected List<U> inputValues;
+  private List<Node<?, U>> inputNodes;
   private Node<U, V> outputNode;
 
   private Operation()
@@ -32,7 +32,7 @@ public abstract class Operation<U, V> extends Node<U, V>
     throw new UnsupportedOperationException("unsupported default constructor");
   }
 
-  public Operation(final String id, final List<Node<U, V>> inputNodes)
+  public Operation(final String id, final List<Node<?, U>> inputNodes)
   {
     super(id);
     if (inputNodes == null) {
@@ -40,34 +40,34 @@ public abstract class Operation<U, V> extends Node<U, V>
     }
     this.inputNodes = inputNodes;
     outputNode = null;
-    for (final Node<U, V> node : inputNodes) {
-      node.getOperations().add(this);
+    for (final Node<?, U> inputNode : inputNodes) {
+      inputNode.getOperations().add(this);
     }
     inputValues = new ArrayList<U>();
     Graph.getDefaultInstance().add(this);
   }
 
-  private void recurse(final Node<U, V> node,
-                       final List<Node<U, V>> nodesPostOrder)
+  private <U, V>void recurse(final Node<U, V> node,
+                             final List<Node<?, ?>> nodesPostOrder)
   {
     if (node instanceof Operation) {
-      final List<Node<U, V>> inputNodes =
+      final List<Node<?, U>> inputNodes =
         ((Operation<U, V>)node).getInputNodes();
-      for (final Node<U, V> inputNode : inputNodes) {
+      for (final Node<?, U> inputNode : inputNodes) {
         recurse(inputNode, nodesPostOrder);
       }
     }
     nodesPostOrder.add(node);
   }
 
-  public List<Node<U, V>> traversePostOrder()
+  public List<Node<?, ?>> traversePostOrder()
   {
-    final List<Node<U, V>> nodesPostOrder = new ArrayList<Node<U, V>>();
+    final List<Node<?, ?>> nodesPostOrder = new ArrayList<Node<?, ?>>();
     recurse(this, nodesPostOrder);
     return nodesPostOrder;
   }
 
-  public List<Node<U, V>> getInputNodes()
+  public List<Node<?, U>> getInputNodes()
   {
     return inputNodes;
   }
@@ -82,23 +82,22 @@ public abstract class Operation<U, V> extends Node<U, V>
     return outputNode;
   }
 
-  public void setInputValues(final List<U> inputValues)
-  {
-    this.inputValues.clear();
-    this.inputValues.addAll(inputValues);
-  }
+  abstract public V performOperation();
 
-  public List<U> getInputValues()
+  @Override
+  public void update()
   {
-    return inputValues;
+    inputValues.clear();
+    for (final Node<?, U> inputNode : inputNodes) {
+      inputValues.add(inputNode.getOutputValue());
+    }
+    setOutputValue(performOperation());
   }
-
-  abstract public V compute(final List<U> operands);
 
   private String inputNodesToString()
   {
     final StringBuilder s = new StringBuilder();
-    for (final Node<U, V> inputNode : getInputNodes()) {
+    for (final Node<?, U> inputNode : getInputNodes()) {
       if (s.length() > 0) {
         s.append(", ");
       }
@@ -118,7 +117,7 @@ public abstract class Operation<U, V> extends Node<U, V>
   private String inputValuesToString()
   {
     final StringBuilder s = new StringBuilder();
-    for (final U inputValue : getInputValues()) {
+    for (final U inputValue : inputValues) {
       if (s.length() > 0) {
         s.append(", ");
       }

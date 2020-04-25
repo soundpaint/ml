@@ -19,14 +19,111 @@
 package org.soundpaint.ml.common;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
-public class Matrix
+// TODO: Would like to generify this class as Matrix<T> over elements
+// of base type T.  However, we have operations such as matrix
+// addition or scaling.  The base type hence would need to implement
+// an interface that provides algebraic operations like that of
+// algebraic rings of fields.  However, one would need to subclass
+// classes like java.lang.Double to implement such an interface with
+// algebraic operations to be applicable for a generic Matrix<T> type
+// with base type T that implements algebraic operations.
+// For now, we assume Double as the only base type of matrices.
+public class Matrix implements Iterable<Double>
 {
+  private class ElementIterator implements Iterator<Double>
+  {
+    private int row, column;
+
+    private ElementIterator()
+    {
+      row = 0;
+      column = 0;
+    }
+
+    public boolean hasNext()
+    {
+      return (row < rows) && (column < columns);
+    }
+
+    public Double next()
+    {
+      if (!hasNext()) {
+        throw new NoSuchElementException();
+      }
+      final Double next = elements[row][column];
+      if (column < columns) {
+        column++;
+      } else if (row < rows) {
+        column = 0;
+        row++;
+      }
+      return next;
+    }
+  }
+
   private final String id;
   private final double[][] elements;
   private final int rows;
   private final int columns;
+
+  public static Matrix createOnes(final int columns)
+  {
+    return createOnes(columns, 1);
+  }
+
+  public static Matrix createOnes(final int columns, final int rows)
+  {
+    final double[][] elements = new double[rows][columns];
+    for (var row = 0; row < rows; row++) {
+      for (var column = 0; column < columns; column++) {
+        elements[row][column] = SampleFunction.ONES.apply(null);
+      }
+    }
+    return new Matrix(elements);
+  }
+
+  public static Matrix createRandomUniform(final int columns)
+  {
+    return createRandomUniform(columns, 1);
+  }
+
+  public static Matrix createRandomUniform(final int columns,
+                                           final int rows)
+  {
+    final double[][] elements = new double[rows][columns];
+    for (var row = 0; row < rows; row++) {
+      for (var column = 0; column < columns; column++) {
+        elements[row][column] = SampleFunction.RANDOM_UNIFORM.apply(null);
+      }
+    }
+    return new Matrix(elements);
+  }
+
+  public static Matrix createRandomNormal(final int columns,
+                                          final double σ,
+                                          final double µ)
+  {
+    return createRandomNormal(columns, 1, σ, µ);
+  }
+
+  public static Matrix createRandomNormal(final int columns,
+                                          final int rows,
+                                          final double σ,
+                                          final double µ)
+  {
+    final double[][] elements = new double[rows][columns];
+    for (var row = 0; row < rows; row++) {
+      for (var column = 0; column < columns; column++) {
+        elements[row][column] =
+          SampleFunction.RANDOM_NORMAL.apply(null) * σ + µ;
+      }
+    }
+    return new Matrix(elements);
+  }
 
   private Matrix()
   {
@@ -65,6 +162,32 @@ public class Matrix
     return id;
   }
 
+  public int getRows()
+  {
+    return rows;
+  }
+
+  public int getColumns()
+  {
+    return columns;
+  }
+
+  public Double getElementAt(final int row, final int column)
+  {
+    return elements[row][column];
+  }
+
+  public void setElementAt(final int row, final int column,
+                           final Double element)
+  {
+    elements[row][column] = element;
+  }
+
+  public Iterator<Double> iterator()
+  {
+    return new ElementIterator();
+  }
+
   public Matrix add(final Matrix other)
   {
     if (other == null) {
@@ -73,16 +196,16 @@ public class Matrix
     if (other.rows != rows) {
       throw new IllegalArgumentException("rows mismatch: " + other.rows +
                                          " != " + rows +
-                                         ", m1=" + this +
-                                         ", m2=" + other);
+                                         ", m1=" + fullToString() +
+                                         ", m2=" + other.fullToString());
     }
     if (other.columns != columns) {
       throw new IllegalArgumentException("rows mismatch: " + other.columns +
                                          " != " + columns +
-                                         ", m1=" + this +
-                                         ", m2=" + other);
+                                         ", m1=" + fullToString() +
+                                         ", m2=" + other.fullToString());
     }
-    double[][] sum = new double[rows][columns];
+    final double[][] sum = new double[rows][columns];
     for (int row = 0; row < rows; row++) {
       for (int column = 0; column < columns; column++) {
         sum[row][column] = elements[row][column] + other.elements[row][column];
@@ -93,7 +216,7 @@ public class Matrix
 
   public Matrix scale(final Double scale)
   {
-    double[][] scaled = new double[rows][columns];
+    final double[][] scaled = new double[rows][columns];
     for (int row = 0; row < rows; row++) {
       for (int column = 0; column < columns; column++) {
         scaled[row][column] = elements[row][column] * scale;
@@ -110,10 +233,10 @@ public class Matrix
     if (other.rows != columns) {
       throw new IllegalArgumentException("size mismatch: " + other.rows +
                                          " != " + columns +
-                                         ", m1=" + this +
-                                         ", m2=" + other);
+                                         ", m1=" + fullToString() +
+                                         ", m2=" + other.fullToString());
     }
-    double[][] product = new double[rows][other.columns];
+    final double[][] product = new double[rows][other.columns];
     for (int otherColumn = 0; otherColumn < other.columns; otherColumn++) {
       for (int row = 0; row < rows; row++) {
         double sum = 0.0;

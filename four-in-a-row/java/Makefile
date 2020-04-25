@@ -51,6 +51,10 @@ run: all
 	#cd $(JAR_DIR) ; java -jar $(JAR_OBJ)
 	cd $(BUILD_DIR) ; java -cp $(RUN_CLASSPATH) org.soundpaint.ml.four_in_a_row.GameControl
 
+test: all
+	#cd $(JAR_DIR) ; java -jar $(JAR_OBJ)
+	cd $(BUILD_DIR) ; java -cp $(RUN_CLASSPATH) org.soundpaint.ml.common.GraphTest
+
 objclean:
 	- rm -rf $(BUILD_DIR)
 
@@ -70,7 +74,7 @@ distclean: clean bkpclean
 .SUFFIXES: $(SUFFIXES) .java .class
 
 $(BUILD_DIR)%class: $(JAVA_DIR)%java
-	javac -Xlint:all -d $(BUILD_DIR) -cp $(COMPILE_CLASSPATH) $<
+	javac -Xlint:all -Xdiags:verbose -d $(BUILD_DIR) -cp $(COMPILE_CLASSPATH) $<
 
 #  Local Variables:
 #    coding:utf-8

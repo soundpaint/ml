@@ -20,51 +20,66 @@ package org.soundpaint.ml.common;
 
 import java.util.function.Function;
 
-public enum ActivationFunction implements Function<Double, Double>
+public interface ActivationFunction<T> extends Function<T, T>
 {
-  THRESHOLD("threshold") {
-    public Double apply(final Double input) {
-      return 1.0 / (1.0 + Math.exp(-input));
-    }
-  },
-
-  SIGMOID("sigmoid") {
-    public Double apply(final Double input) {
-      return 1.0 / (1.0 + Math.exp(-input));
-    }
-  },
-
-  HYPERBOLIC_TANGENT("hyperbolic tangent") {
-    public Double apply(final Double input) {
-      return Math.tanh(input);
-    }
-  },
-
-  RECTIFIED_LINEAR_UNIT("rectified linear unit") {
-    public Double apply(final Double input) {
-      return input < 0.0 ? 0.0 : input;
-    }
-  };
-
-  private final String id;
-
-  private ActivationFunction() {
-    throw new UnsupportedOperationException("unsupported default constructor");
-  }
-
-  private ActivationFunction(final String id) {
-    this.id = id;
-  }
-
-  public String getId()
+  public enum Standard implements ActivationFunction<Double>
   {
-    return id;
+    THRESHOLD("threshold")
+    {
+      public Double apply(final Double input)
+      {
+        return 1.0 / (1.0 + Math.exp(-input));
+      }
+    },
+
+    SIGMOID("sigmoid")
+    {
+      public Double apply(final Double input)
+      {
+        return 1.0 / (1.0 + Math.exp(-input));
+      }
+    },
+
+    HYPERBOLIC_TANGENT("hyperbolic tangent")
+    {
+      public Double apply(final Double input)
+      {
+        return Math.tanh(input);
+      }
+    },
+
+    RECTIFIED_LINEAR_UNIT("rectified linear unit")
+    {
+      public Double apply(final Double input)
+      {
+        return input < 0.0 ? 0.0 : input;
+      }
+    };
+
+    private final String id;
+
+    private Standard()
+    {
+      throw new UnsupportedOperationException("unsupported default constructor");
+    }
+
+    private Standard(final String id)
+    {
+      this.id = id;
+    }
+
+    public String getId()
+    {
+      return id;
+    }
+
+    public String toString()
+    {
+      return "activation function " + id;
+    }
   }
 
-  public String toString()
-  {
-    return "activation function " + id;
-  }
+  String getId();
 }
 
 /*

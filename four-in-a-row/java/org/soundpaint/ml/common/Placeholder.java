@@ -18,12 +18,23 @@
  */
 package org.soundpaint.ml.common;
 
-public class Placeholder<U, V> extends Node<U, V>
+import java.util.HashMap;
+
+public class Placeholder<T> extends Node<T, T>
 {
-  public Placeholder()
+  private final FeedDictionary feedDictionary;
+
+  public Placeholder(final FeedDictionary feedDictionary)
   {
     super("placeholder");
+    this.feedDictionary = feedDictionary;
     Graph.getDefaultInstance().add(this);
+  }
+
+  @Override
+  public void update()
+  {
+    setOutputValue(feedDictionary.get(this));
   }
 }
 
