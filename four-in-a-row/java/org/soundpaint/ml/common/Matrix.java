@@ -86,18 +86,53 @@ public class Matrix implements Iterable<Double>
     return new Matrix(elements);
   }
 
-  public static Matrix createRandomUniform(final int columns)
+  public static Matrix createLinearSpace(final int columns,
+                                         final double firstValue,
+                                         final double lastValue)
   {
-    return createRandomUniform(columns, 1);
+    return createLinearSpace(columns, 1, firstValue, lastValue);
+  }
+
+  public static Matrix createLinearSpace(final int columns,
+                                         final int rows,
+                                         final double firstValue,
+                                         final double lastValue)
+  {
+    final int count = rows * columns;
+    if (count <= 1) {
+      throw new IllegalArgumentException("got " + count +
+                                         " elements, but need at least 2");
+    }
+    final double space = lastValue - firstValue;
+    final double distance = space / (count - 1);
+    final double[][] elements = new double[rows][columns];
+    int index = 0;
+    for (var row = 0; row < rows; row++) {
+      for (var column = 0; column < columns; column++) {
+        elements[row][column] = firstValue + index++ * distance;
+      }
+    }
+    return new Matrix(elements);
   }
 
   public static Matrix createRandomUniform(final int columns,
-                                           final int rows)
+                                           final double minValue,
+                                           final double maxValue)
   {
+    return createRandomUniform(columns, 1, minValue, maxValue);
+  }
+
+  public static Matrix createRandomUniform(final int columns,
+                                           final int rows,
+                                           final double minValue,
+                                           final double maxValue)
+  {
+    final double interval = maxValue - minValue;
     final double[][] elements = new double[rows][columns];
     for (var row = 0; row < rows; row++) {
       for (var column = 0; column < columns; column++) {
-        elements[row][column] = SampleFunction.RANDOM_UNIFORM.apply(null);
+        elements[row][column] =
+          minValue + interval * SampleFunction.RANDOM_UNIFORM.apply(null);
       }
     }
     return new Matrix(elements);

@@ -18,7 +18,6 @@
  */
 package org.soundpaint.ml.common;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MatrixAddOperation extends Operation<Matrix, Matrix>

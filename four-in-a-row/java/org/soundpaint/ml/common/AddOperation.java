@@ -18,7 +18,6 @@
  */
 package org.soundpaint.ml.common;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AddOperation extends Operation<Double, Double>

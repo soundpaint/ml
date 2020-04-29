@@ -24,6 +24,14 @@ public interface ActivationFunction<T> extends Function<T, T>
 {
   public enum Standard implements ActivationFunction<Double>
   {
+    IDENTITY("identity")
+    {
+      public Double apply(final Double input)
+      {
+        return input;
+      }
+    },
+
     THRESHOLD("threshold")
     {
       public Double apply(final Double input)
