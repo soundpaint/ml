@@ -28,7 +28,6 @@ import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -135,9 +134,8 @@ public class PlotPane extends JPanel
     final Stream<Double> logScaleUnits =
       SCALE_UNITS.stream().map(x -> Math.log(x));
     SCALE_LOG_SCALE_UNITS =
-      StreamUtils.zip(SCALE_UNITS.stream(), logScaleUnits,
-                      new StreamUtils.PairFactory<Double,Double>()).
-      collect(Collectors.toList());
+      StreamUtils.zipToList(SCALE_UNITS.stream(), logScaleUnits,
+                            new StreamUtils.PairFactory<Double,Double>());
   }
 
   private double getNearestScaleUnit(final double scaleFactor)

@@ -19,10 +19,12 @@
 package org.soundpaint.ml.common;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -80,6 +82,29 @@ public class StreamUtils
     final Spliterator<C> split =
       Spliterators.spliterator(cIterator, zipSize, characteristics);
     return StreamSupport.stream(split, a.isParallel() || b.isParallel());
+  }
+
+  /**
+   * Zips two streams into one, using the user specified zipper
+   * function.
+   *
+   * Implementation of this method has been inspired by an early
+   * version of the java streams specification.
+   *
+   * @param a The first stream.
+   * @param b The second stream.
+   * @param zipper Function.  A BiFunction that zips a single element
+   * x of stream a of type A and a single given element y of stream b
+   * of type B into some object that encapsulates x and y e.g. into a
+   * Pair object.
+   */
+  public static <A, B, C> List<C>
+    zipToList(final Stream<? extends A> a,
+              final Stream<? extends B> b,
+              final BiFunction<? super A, ? super B, ? extends C> zipper)
+  {
+    //return zip(a, b, zipper).toArray(size -> new C[size]);
+    return zip(a, b, zipper).collect(Collectors.toList());
   }
 
   public static class Pair<A, B>

@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 // TODO: Would like to generify this class as Matrix<T> over elements
 // of base type T.  However, we have operations such as matrix
@@ -221,6 +223,12 @@ public class Matrix implements Iterable<Double>
   public Iterator<Double> iterator()
   {
     return new ElementIterator();
+  }
+
+  public Stream<Double> stream()
+  {
+    final Iterable<Double> iterable = () -> iterator();
+    return StreamSupport.stream(iterable.spliterator(), false);
   }
 
   public Matrix add(final Matrix other)

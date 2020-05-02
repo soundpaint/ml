@@ -63,6 +63,25 @@ public abstract class Node<U, V>
 
   abstract void update();
 
+  private void recurse(final List<Node<?, ?>> nodesPostOrder)
+  {
+    if (this instanceof Operation) {
+      final List<Node<?, U>> inputNodes =
+        ((Operation<U, V>)this).getInputNodes();
+      for (final Node<?, U> inputNode : inputNodes) {
+        inputNode.recurse(nodesPostOrder);
+      }
+    }
+    nodesPostOrder.add(this);
+  }
+
+  public List<Node<?, ?>> traversePostOrder()
+  {
+    final List<Node<?, ?>> nodesPostOrder = new ArrayList<Node<?, ?>>();
+    recurse(nodesPostOrder);
+    return nodesPostOrder;
+  }
+
   public String toString()
   {
     final StringBuilder s = new StringBuilder();

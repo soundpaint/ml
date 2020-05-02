@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 public class FeedDictionary
 {
-  final HashMap<Object, Object> dictionary;
+  final HashMap<Placeholder<?>, Object> dictionary;
 
   public FeedDictionary()
   {

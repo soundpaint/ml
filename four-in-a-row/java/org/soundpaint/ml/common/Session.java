@@ -24,10 +24,10 @@ import java.util.List;
 
 public class Session
 {
-  public Object run(final Operation<?, ?> operation)
+  public Object run(final Node<?, ?> targetNode)
   {
-    final List<Node<?, ?>> nodesPostOrder = operation.traversePostOrder();
-    for (Node<?, ?> node : nodesPostOrder) {
+    final List<Node<?, ?>> nodesPostOrder = targetNode.traversePostOrder();
+    for (final Node<?, ?> node : nodesPostOrder) {
       node.update();
       /*
       if (node.getOutputValue() instanceof List) {
@@ -36,7 +36,7 @@ public class Session
       }
       */
     }
-    return operation.getOutputValue();
+    return targetNode.getOutputValue();
   }
 }
 

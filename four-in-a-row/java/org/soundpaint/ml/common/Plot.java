@@ -23,8 +23,6 @@ import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import javax.swing.JOptionPane;
 
@@ -53,9 +51,8 @@ public class Plot
     final var xStream = StreamSupport.stream(x.spliterator(), false);
     final var yStream = StreamSupport.stream(y.spliterator(), false);
     final var points =
-      StreamUtils.zip(xStream, yStream, Point2DFactory.getDefaultInstance()).
-      //toArray(size -> new Point2D.Double[size]);
-      collect(Collectors.toList());
+      StreamUtils.zipToList(xStream, yStream,
+                            Point2DFactory.getDefaultInstance());
     final PlotPane plotPane = new PlotPane(diagramLabel);
     plotPane.addPoints(points, null);
     /*

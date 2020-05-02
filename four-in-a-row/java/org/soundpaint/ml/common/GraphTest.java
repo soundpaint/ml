@@ -18,8 +18,6 @@
  */
 package org.soundpaint.ml.common;
 
-import java.util.HashMap;
-
 public class GraphTest
 {
   private void test1() {
@@ -97,14 +95,12 @@ public class GraphTest
       new Variable<Matrix>(Matrix.createRandomUniform(11, -1.5, 1.5));
     final var yLabel = new MatrixAddOperation(yLabel0, yLabel1);
 
-    final var a =
-      new ActivationOperation<Matrix>(ActivationFunction.Standard.IDENTITY,
-                                      xData);
-    final var b =
-      new ActivationOperation<Matrix>(ActivationFunction.Standard.IDENTITY,
-                                      yLabel);
     final var session = new Session();
-    session.run(a);
+    session.run(xData);
+    session.run(yLabel);
+    final var m = new Variable<Double>(0.44);
+    final var b = new Variable<Double>(0.87);
+    session.run(m);
     session.run(b);
     Plot.show("Linear Regression", "Points Before Regression",
               xData.getOutputValue(), yLabel.getOutputValue());

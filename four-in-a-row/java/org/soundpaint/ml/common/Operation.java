@@ -47,26 +47,6 @@ public abstract class Operation<U, V> extends Node<U, V>
     Graph.getDefaultInstance().add(this);
   }
 
-  private <U, V>void recurse(final Node<U, V> node,
-                             final List<Node<?, ?>> nodesPostOrder)
-  {
-    if (node instanceof Operation) {
-      final List<Node<?, U>> inputNodes =
-        ((Operation<U, V>)node).getInputNodes();
-      for (final Node<?, U> inputNode : inputNodes) {
-        recurse(inputNode, nodesPostOrder);
-      }
-    }
-    nodesPostOrder.add(node);
-  }
-
-  public List<Node<?, ?>> traversePostOrder()
-  {
-    final List<Node<?, ?>> nodesPostOrder = new ArrayList<Node<?, ?>>();
-    recurse(this, nodesPostOrder);
-    return nodesPostOrder;
-  }
-
   public List<Node<?, U>> getInputNodes()
   {
     return inputNodes;
