@@ -26,13 +26,62 @@ import java.awt.geom.Point2D;
 
 public class Text extends GraphicalObject
 {
-  private final String text;
+  public enum AlignmentX {
+    LEFT, CENTER, RIGHT;
 
-  public Text(final Point2D startPosition, final String text,
-              final Color color)
+    public double getOffset(final int stringWidth)
+    {
+      switch (this) {
+      case RIGHT:
+        return -stringWidth;
+      case CENTER:
+        return -0.5 * stringWidth;
+      case LEFT:
+      default:
+        return 0.0;
+      }
+    }
+  };
+
+  public enum AlignmentY {
+    TOP, MIDDLE, BOTTOM;
+
+    public double getOffset(final int fontHeight)
+    {
+      switch (this) {
+      case TOP:
+        return fontHeight;
+      case MIDDLE:
+        return 0.5 * fontHeight;
+      case BOTTOM:
+      default:
+        return 0.0;
+      }
+    }
+  };
+
+  private final String text;
+  private final AlignmentX alignmentX;
+  private final AlignmentY alignmentY;
+
+  public Text(final Point2D position, final String text,
+              final Color color,
+              final AlignmentX alignmentX, final AlignmentY alignmentY)
   {
-    super(startPosition, color, null);
+    this(position, ZERO_POINT, text, color, alignmentX, alignmentY);
+  }
+
+  public Text(final Point2D position,
+              final Point2D displayOffset,
+              final String text,
+              final Color color,
+              final AlignmentX alignmentX,
+              final AlignmentY alignmentY)
+  {
+    super(position, displayOffset, color, null);
     this.text = text;
+    this.alignmentX = alignmentX;
+    this.alignmentY = alignmentY;
   }
 
   // TODO: Compute bounding box of text.  For now,
@@ -65,8 +114,15 @@ public class Text extends GraphicalObject
                    final Stroke defaultStroke)
   {
     super.draw(affineTransform, g, defaultColor, defaultStroke);
-    final Point2D p1 = getDisplayPosition(affineTransform);
-    g.drawString(text, (int)p1.getX(), (int)p1.getY());
+    final Point2D position = getDisplayPosition(affineTransform);
+    final Point2D offset = getDisplayOffset();
+    final double alignmentXOffset =
+      alignmentX.getOffset(g.getFontMetrics().stringWidth(text));
+    final double alignmentYOffset =
+      alignmentY.getOffset(g.getFontMetrics().getHeight());
+    g.drawString(text,
+                 (int)(position.getX() + offset.getX() + alignmentXOffset),
+                 (int)(position.getY() + offset.getY() + alignmentYOffset));
   }
 }
 

@@ -23,6 +23,7 @@ import java.util.HashMap;
 public class GraphTest
 {
   private void test1() {
+    System.out.println("running test #1");
     Graph.getDefaultInstance().clear();
     final FeedDictionary feedDictionary = new FeedDictionary();
 
@@ -38,6 +39,7 @@ public class GraphTest
   }
 
   private void test2() {
+    System.out.println("running test #2");
     Graph.getDefaultInstance().clear();
     final FeedDictionary feedDictionary = new FeedDictionary();
 
@@ -55,6 +57,7 @@ public class GraphTest
   }
 
   private void test3() {
+    System.out.println("running test #3");
     Graph.getDefaultInstance().clear();
     RandomSingleton.getInstance().setSeed(101);
     final FeedDictionary feedDictionary = new FeedDictionary();
@@ -77,19 +80,23 @@ public class GraphTest
   }
 
   private void test4() {
+    System.out.println("running test #4");
     Graph.getDefaultInstance().clear();
     RandomSingleton.getInstance().setSeed(101);
     final FeedDictionary feedDictionary = new FeedDictionary();
+
     final var xData0 =
       new Variable<Matrix>(Matrix.createLinearSpace(11, 0.0, 10.0));
     final var xData1 =
       new Variable<Matrix>(Matrix.createRandomUniform(11, -1.5, 1.5));
     final var xData = new MatrixAddOperation(xData0, xData1);
+
     final var yLabel0 =
       new Variable<Matrix>(Matrix.createLinearSpace(11, 0.0, 10.0));
     final var yLabel1 =
       new Variable<Matrix>(Matrix.createRandomUniform(11, -1.5, 1.5));
     final var yLabel = new MatrixAddOperation(yLabel0, yLabel1);
+
     final var a =
       new ActivationOperation<Matrix>(ActivationFunction.Standard.IDENTITY,
                                       xData);
@@ -106,10 +113,12 @@ public class GraphTest
   public static void main(final String argv[])
   {
     final GraphTest graphTest = new GraphTest();
+    System.out.println("running all tests");
     graphTest.test1();
     graphTest.test2();
     graphTest.test3();
     graphTest.test4();
+    System.out.println("all tests done");
   }
 }
 

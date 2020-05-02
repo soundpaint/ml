@@ -49,11 +49,11 @@ tags:
 
 run: all
 	#cd $(JAR_DIR) ; java -jar $(JAR_OBJ)
-	cd $(BUILD_DIR) ; java -cp $(RUN_CLASSPATH) org.soundpaint.ml.four_in_a_row.GameControl
+	cd $(BUILD_DIR) ; java -ea -cp $(RUN_CLASSPATH) org.soundpaint.ml.four_in_a_row.GameControl
 
 test: all
 	#cd $(JAR_DIR) ; java -jar $(JAR_OBJ)
-	cd $(BUILD_DIR) ; java -cp $(RUN_CLASSPATH) org.soundpaint.ml.common.GraphTest
+	cd $(BUILD_DIR) ; java -ea -cp $(RUN_CLASSPATH) org.soundpaint.ml.common.GraphTest
 
 objclean:
 	- rm -rf $(BUILD_DIR)

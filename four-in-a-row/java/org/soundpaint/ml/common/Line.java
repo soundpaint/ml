@@ -23,35 +23,76 @@ import java.awt.Graphics;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.util.Objects;
 
 public class Line extends GraphicalObject
 {
   private final Point2D endPosition;
+  private final Point2D endDisplayOffset;
 
-  public Line(final Point2D startPosition, final Point2D endPosition,
+  public Line(final Point2D startPosition,
+              final Point2D endPosition,
               final Color color, final Stroke stroke)
   {
-    super(startPosition, color, stroke);
+    this(startPosition, ZERO_POINT,
+         endPosition, ZERO_POINT,
+         color, stroke);
+  }
+
+  public Line(final Point2D startPosition,
+              final Point2D startDisplayOffset,
+              final Point2D endPosition,
+              final Point2D endDisplayOffset,
+              final Color color, final Stroke stroke)
+  {
+    super(startPosition, startDisplayOffset, color, stroke);
+    Objects.requireNonNull(endPosition);
+    Objects.requireNonNull(endDisplayOffset);
     this.endPosition = endPosition;
+    this.endDisplayOffset = endDisplayOffset;
+  }
+
+  public Point2D getStartPosition()
+  {
+    return getPosition();
+  }
+
+  public Point2D getStartDisplayOffset()
+  {
+    return getDisplayOffset();
+  }
+
+  public Point2D getEndPosition()
+  {
+    return endPosition;
+  }
+
+  public Point2D getEndDisplayOffset()
+  {
+    return endDisplayOffset;
   }
 
   @Override
-  public double getLowerBoundX() {
+  public double getLowerBoundX()
+  {
     return Math.min(getPosition().getX(), endPosition.getX());
   }
 
   @Override
-  public double getUpperBoundX() {
+  public double getUpperBoundX()
+  {
     return Math.max(getPosition().getX(), endPosition.getX());
   }
 
   @Override
-  public double getLowerBoundY() {
+  public double getLowerBoundY()
+  {
     return Math.min(getPosition().getY(), endPosition.getY());
   }
 
   @Override
-  public double getUpperBoundY() {
+  public double getUpperBoundY()
+  {
     return Math.max(getPosition().getY(), endPosition.getY());
   }
 
@@ -62,10 +103,14 @@ public class Line extends GraphicalObject
                    final Stroke defaultStroke)
   {
     super.draw(affineTransform, g, defaultColor, defaultStroke);
-    final Point2D p1 = getDisplayPosition(affineTransform);
-    final Point2D p2 = affineTransform.transform(endPosition, null);
-    g.drawLine((int)p1.getX(), (int)p1.getY(),
-               (int)p2.getX(), (int)p2.getY());
+    final Point2D position1 = getDisplayPosition(affineTransform);
+    final Point2D offset1 = getStartDisplayOffset();
+    final Point2D position2 = affineTransform.transform(endPosition, null);
+    final Point2D offset2 = getEndDisplayOffset();
+    g.drawLine((int)(position1.getX() + offset1.getX()),
+               (int)(position1.getY() + offset1.getY()),
+               (int)(position2.getX() + offset2.getX()),
+               (int)(position2.getY() + offset2.getY()));
   }
 }
 

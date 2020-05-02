@@ -40,27 +40,67 @@ public class Graphic implements Iterable<GraphicalObject>
     boundsDirty = true;
   }
 
-  public void addPoint(final Point2D point,
+  public void addPoint(final Point2D position,
                        final int radius,
                        final boolean fill,
                        final Color color,
                        final Stroke stroke)
   {
-    objects.add(new DataPoint(point, radius, fill, color, stroke));
+    addPoint(position, GraphicalObject.ZERO_POINT,
+             radius, fill, color, stroke);
+  }
+
+  public void addPoint(final Point2D position,
+                       final Point2D displayOffset,
+                       final int radius,
+                       final boolean fill,
+                       final Color color,
+                       final Stroke stroke)
+  {
+    objects.add(new DataPoint(position, displayOffset,
+                              radius, fill, color, stroke));
     boundsDirty = true;
   }
 
-  public void addLine(final Point2D p1, final Point2D p2,
+  public void addLine(final Point2D position1,
+                      final Point2D position2,
                       final Color color, final Stroke stroke)
   {
-    objects.add(new Line(p1, p2, color, stroke));
+    addLine(position1, GraphicalObject.ZERO_POINT,
+            position2, GraphicalObject.ZERO_POINT,
+            color, stroke);
+  }
+
+  public void addLine(final Point2D position1,
+                      final Point2D displayOffset1,
+                      final Point2D position2,
+                      final Point2D displayOffset2,
+                      final Color color, final Stroke stroke)
+  {
+    objects.add(new Line(position1, displayOffset1,
+                         position2, displayOffset2,
+                         color, stroke));
     boundsDirty = true;
   }
 
-  public void addText(final Point2D pos, final String text,
-                      final Color color)
+  public void addText(final Point2D position, final String text,
+                      final Color color,
+                      final Text.AlignmentX alignmentX,
+                      final Text.AlignmentY alignmentY)
   {
-    objects.add(new Text(pos, text, color));
+    addText(position, GraphicalObject.ZERO_POINT, text, color,
+            alignmentX, alignmentY);
+  }
+
+  public void addText(final Point2D position,
+                      final Point2D displayOffset,
+                      final String text,
+                      final Color color,
+                      final Text.AlignmentX alignmentX,
+                      final Text.AlignmentY alignmentY)
+  {
+    objects.add(new Text(position, displayOffset, text, color,
+                         alignmentX, alignmentY));
     boundsDirty = true;
   }
 

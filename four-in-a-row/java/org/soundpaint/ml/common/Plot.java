@@ -22,9 +22,6 @@ import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
-import java.util.Spliterator;
-import java.util.Spliterators;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,66 +30,14 @@ import javax.swing.JOptionPane;
 
 public class Plot
 {
-  /**
-   * Zips two streams into one, using the user specified zipper
-   * function.
-   *
-   * Implementation of this method has been inspired by an early
-   * version of the java streams specification.
-   *
-   * @param a The first stream.
-   * @param b The second stream.
-   * @param zipper Function.  A BiFunction that zips a single element
-   * x of stream a of type A and a single given element y of stream b
-   * of type B into some object that encapsulates x and y e.g. into a
-   * Pair object.
-   */
-  public static <A, B, C> Stream<C>
-    zip(final Stream<? extends A> a,
-        final Stream<? extends B> b,
-        final BiFunction<? super A, ? super B, ? extends C> zipper)
-  {
-    Objects.requireNonNull(zipper);
-    final Spliterator<? extends A> aSpliterator =
-      Objects.requireNonNull(a).spliterator();
-    final Spliterator<? extends B> bSpliterator =
-      Objects.requireNonNull(b).spliterator();
-
-    // Zipping looses DISTINCT and SORTED characteristics
-    final int characteristics =
-      aSpliterator.characteristics() & bSpliterator.characteristics() &
-      ~(Spliterator.DISTINCT | Spliterator.SORTED);
-
-    final long zipSize = ((characteristics & Spliterator.SIZED) != 0)
-      ? Math.min(aSpliterator.getExactSizeIfKnown(),
-                 bSpliterator.getExactSizeIfKnown())
-      : -1;
-
-    final Iterator<A> aIterator = Spliterators.iterator(aSpliterator);
-    final Iterator<B> bIterator = Spliterators.iterator(bSpliterator);
-    final Iterator<C> cIterator = new Iterator<C>() {
-        @Override
-        public boolean hasNext() {
-          return aIterator.hasNext() && bIterator.hasNext();
-        }
-
-        @Override
-        public C next() {
-          return zipper.apply(aIterator.next(), bIterator.next());
-        }
-      };
-
-    final Spliterator<C> split =
-      Spliterators.spliterator(cIterator, zipSize, characteristics);
-    return StreamSupport.stream(split, a.isParallel() || b.isParallel());
-  }
-
-  private static class PairFactory
+  private static class Point2DFactory
     implements BiFunction<Double, Double, Point2D>
   {
-    private static final PairFactory defaultInstance = new PairFactory();
+    private static final Point2DFactory defaultInstance = new Point2DFactory();
 
-    public static PairFactory getDefaultInstance() { return defaultInstance; }
+    public static Point2DFactory getDefaultInstance() {
+      return defaultInstance;
+    }
 
     public Point2D apply(final Double x, final Double y)
     {
@@ -107,18 +52,21 @@ public class Plot
   {
     final var xStream = StreamSupport.stream(x.spliterator(), false);
     final var yStream = StreamSupport.stream(y.spliterator(), false);
-    final var p =
-      zip(xStream, yStream, PairFactory.getDefaultInstance()).
+    final var points =
+      StreamUtils.zip(xStream, yStream, Point2DFactory.getDefaultInstance()).
       //toArray(size -> new Point2D.Double[size]);
       collect(Collectors.toList());
     final PlotPane plotPane = new PlotPane(diagramLabel);
-    plotPane.addPoints(p, null);
+    plotPane.addPoints(points, null);
+    /*
+    plotPane.addLine(-7.0, -7.0, 10.0, 10.0,
+                     Color.BLUE, PlotPane.DEFAULT_LINE_STROKE); // DEBUG
+    */
     plotPane.addAxes();
     JOptionPane.
       showMessageDialog(null,
                         plotPane, windowTitle,
                         JOptionPane.INFORMATION_MESSAGE);
-    System.out.println("done");
   }
 }
 

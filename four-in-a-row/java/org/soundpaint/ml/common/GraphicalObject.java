@@ -24,10 +24,13 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
+import java.util.Objects;
 
 public abstract class GraphicalObject
 {
+  public static final Point2D ZERO_POINT = new Point2D.Double(0.0, 0.0);
   private final Point2D position;
+  private final Point2D displayOffset;
   private final Color color;
   private final Stroke stroke;
 
@@ -40,7 +43,18 @@ public abstract class GraphicalObject
                          final Color color,
                          final Stroke stroke)
   {
+    this(position, ZERO_POINT, color, stroke);
+  }
+
+  public GraphicalObject(final Point2D position,
+                         final Point2D displayOffset,
+                         final Color color,
+                         final Stroke stroke)
+  {
+    Objects.requireNonNull(position);
     this.position = position;
+    Objects.requireNonNull(displayOffset);
+    this.displayOffset = displayOffset;
     this.color = color;
     this.stroke = stroke;
   }
@@ -48,6 +62,11 @@ public abstract class GraphicalObject
   public Point2D getPosition()
   {
     return position;
+  }
+
+  public Point2D getDisplayOffset()
+  {
+    return displayOffset;
   }
 
   abstract double getLowerBoundX();

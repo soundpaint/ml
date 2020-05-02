@@ -36,7 +36,15 @@ public class DataPoint extends GraphicalObject
                    final int radius, final boolean fill,
                    final Color color, final Stroke stroke)
   {
-    super(position, color, stroke);
+    this(position, ZERO_POINT, radius, fill, color, stroke);
+  }
+
+  public DataPoint(final Point2D position,
+                   final Point2D displayOffset,
+                   final int radius, final boolean fill,
+                   final Color color, final Stroke stroke)
+  {
+    super(position, displayOffset, color, stroke);
     if (radius < 1) {
       throw new IllegalArgumentException("radius < 1: " + radius);
     }
@@ -73,11 +81,12 @@ public class DataPoint extends GraphicalObject
   {
     super.draw(affineTransform, g, defaultColor, defaultStroke);
     final Graphics2D g2d = (Graphics2D)g;
-    final Point2D displayPosition = getDisplayPosition(affineTransform);
+    final Point2D position = getDisplayPosition(affineTransform);
+    final Point2D offset = getDisplayOffset();
+    final int posX = (int)(position.getX() + offset.getX()) - radius;
+    final int posY = (int)(position.getY() + offset.getY()) - radius;
     final Ellipse2D.Double circle =
-      new Ellipse2D.Double((int)displayPosition.getX() - radius,
-                           (int)displayPosition.getY() - radius,
-                           diameter, diameter);
+      new Ellipse2D.Double(posX, posY, diameter, diameter);
     if (fill) {
       g2d.fill(circle);
     }
