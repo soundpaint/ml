@@ -34,6 +34,72 @@ public class Variable<T> extends Node<T, T>
     Graph.getDefaultInstance().add(this);
   }
 
+  public static <T> Variable<T> create(final T value)
+  {
+    return new Variable<T>(value);
+  }
+
+  public static Variable<Matrix> createMatrix(final double[][] elements)
+  {
+    return create(new Matrix(elements));
+  }
+
+  public static Variable<Matrix> createOnes(final int count)
+  {
+    return create(Matrix.createOnes(count, 1));
+  }
+
+  public static Variable<Matrix> createOnes(final int columns,
+                                            final int rows)
+  {
+    return create(Matrix.createOnes(columns, rows));
+  }
+
+  public static Variable<Matrix> createLinearSpace(final double min,
+                                                   final double max,
+                                                   final int count)
+  {
+    return create(Matrix.createLinearSpace(count, 1, min, max));
+  }
+
+  public static Variable<Matrix> createLinearSpace(final double min,
+                                                   final double max,
+                                                   final int columns,
+                                                   final int rows)
+  {
+    return create(Matrix.createLinearSpace(columns, rows, min, max));
+  }
+
+  public static Variable<Matrix> createRandomUniform(final double min,
+                                                     final double max,
+                                                     final int count)
+  {
+    return create(Matrix.createRandomUniform(count, 1, min, max));
+  }
+
+  public static Variable<Matrix> createRandomUniform(final double min,
+                                                     final double max,
+                                                     final int columns,
+                                                     final int rows)
+  {
+    return create(Matrix.createRandomUniform(columns, rows, min, max));
+  }
+
+  public static Variable<Matrix> createRandomNormal(final double σ,
+                                                    final double µ,
+                                                    final int count)
+  {
+    return create(Matrix.createRandomNormal(count, 1, σ, µ));
+  }
+
+  public static Variable<Matrix> createRandomNormal(final double σ,
+                                                    final double µ,
+                                                    final int columns,
+                                                    final int rows)
+  {
+    return create(Matrix.createRandomUniform(columns, rows, σ, µ));
+  }
+
   public T getValue()
   {
     return value;

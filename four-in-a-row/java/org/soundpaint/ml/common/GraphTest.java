@@ -29,8 +29,8 @@ public class GraphTest
     final FeedDictionary feedDictionary = new FeedDictionary();
 
     // z = ax + b
-    final var a = new Variable<Double>(Math.PI);
-    final var b = new Variable<Double>(Math.E);
+    final var a = Variable.create(Math.PI);
+    final var b = Variable.create(Math.E);
     final var x = new Placeholder<Double>(feedDictionary);
     final var y = new MultiplyOperation(a, x);
     final var z = new AddOperation(y, b);
@@ -46,9 +46,9 @@ public class GraphTest
 
     // z = Ax + b
     final var a =
-      new Variable<Matrix>(new Matrix(new double[][] {{1.0, 2.0}, {3.0, 4.0}}));
+      Variable.createMatrix(new double[][] {{1.0, 2.0}, {3.0, 4.0}});
     final var b =
-      new Variable<Matrix>(new Matrix(new double[][] {{400.0, 300.0}, {200.0, 100.0}}));
+      Variable.createMatrix(new double[][] {{400.0, 300.0}, {200.0, 100.0}});
     final var x = new Placeholder<Matrix>(feedDictionary);
     final var y = new MatrixMultiplyOperation(a, x);
     final var z = new MatrixAddOperation(y, b);
@@ -67,8 +67,8 @@ public class GraphTest
     final var nDenseNeurons = 3;
     final var x = new Placeholder<Matrix>(feedDictionary);
     final var w =
-      new Variable<Matrix>(Matrix.createRandomNormal(nFeatures, nDenseNeurons, 1.0, 0.0));
-    final var b = new Variable<Matrix>(Matrix.createOnes(1, nDenseNeurons));
+      Variable.createRandomNormal(1.0, 0.0, nFeatures, nDenseNeurons);
+    final var b = Variable.createOnes(1, nDenseNeurons);
     final var wx = new MatrixMultiplyOperation(w, x);
     final var z = new MatrixAddOperation(wx, b);
     final var a =
@@ -86,23 +86,19 @@ public class GraphTest
     RandomSingleton.getInstance().setSeed(101);
     final FeedDictionary feedDictionary = new FeedDictionary();
 
-    final var xData0 =
-      new Variable<Matrix>(Matrix.createLinearSpace(11, 0.0, 10.0));
-    final var xData1 =
-      new Variable<Matrix>(Matrix.createRandomUniform(11, -1.5, 1.5));
+    final var xData0 = Variable.createLinearSpace(0.0, 10.0, 11);
+    final var xData1 = Variable.createRandomUniform(-1.5, 1.5, 11);
     final var xData = new MatrixAddOperation(xData0, xData1);
 
-    final var yLabel0 =
-      new Variable<Matrix>(Matrix.createLinearSpace(11, 0.0, 10.0));
-    final var yLabel1 =
-      new Variable<Matrix>(Matrix.createRandomUniform(11, -1.5, 1.5));
+    final var yLabel0 = Variable.createLinearSpace(0.0, 10.0, 11);
+    final var yLabel1 = Variable.createRandomUniform(-1.5, 1.5, 11);
     final var yLabel = new MatrixAddOperation(yLabel0, yLabel1);
 
     final var session = new Session();
     session.run(xData);
     session.run(yLabel);
-    final var m = new Variable<Double>(0.44);
-    final var b = new Variable<Double>(0.87);
+    final var m = Variable.create(0.44);
+    final var b = Variable.create(0.87);
     session.run(m);
     session.run(b);
     final List<StreamUtils.Pair<Double, Double>> zipped =
@@ -117,8 +113,9 @@ public class GraphTest
 
     final var finalSlope = 1.0; // TODO: Compute this value.
     final var finalIntercept = -1.0; // TODO: Compute this value.
-    final var xTest =
-      new Variable<Matrix>(Matrix.createLinearSpace(10, -1.0, 11.0));
+    final var xTest = Variable.createLinearSpace(-1.0, 11.0, 10);
+
+    // # y = mx + b
     final var yPredPlot =
       new MatrixAddOperation(new MatrixScaleOperation(finalSlope, xTest),
                              finalIntercept);

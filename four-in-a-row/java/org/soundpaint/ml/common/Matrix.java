@@ -73,14 +73,6 @@ public class Matrix implements Iterable<Double>
   private final int columns;
 
   /**
-   * Creates columns×1 matrix filled with 1 values.
-   */
-  public static Matrix createOnes(final int columns)
-  {
-    return createOnes(columns, 1);
-  }
-
-  /**
    * Creates columns×rows matrix filled with 1 values.
    */
   public static Matrix createOnes(final int columns, final int rows)
@@ -92,13 +84,6 @@ public class Matrix implements Iterable<Double>
       }
     }
     return new Matrix(elements);
-  }
-
-  public static Matrix createLinearSpace(final int columns,
-                                         final double firstValue,
-                                         final double lastValue)
-  {
-    return createLinearSpace(columns, 1, firstValue, lastValue);
   }
 
   public static Matrix createLinearSpace(final int columns,
@@ -124,13 +109,6 @@ public class Matrix implements Iterable<Double>
   }
 
   public static Matrix createRandomUniform(final int columns,
-                                           final double minValue,
-                                           final double maxValue)
-  {
-    return createRandomUniform(columns, 1, minValue, maxValue);
-  }
-
-  public static Matrix createRandomUniform(final int columns,
                                            final int rows,
                                            final double minValue,
                                            final double maxValue)
@@ -144,13 +122,6 @@ public class Matrix implements Iterable<Double>
       }
     }
     return new Matrix(elements);
-  }
-
-  public static Matrix createRandomNormal(final int columns,
-                                          final double σ,
-                                          final double µ)
-  {
-    return createRandomNormal(columns, 1, σ, µ);
   }
 
   public static Matrix createRandomNormal(final int columns,
