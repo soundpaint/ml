@@ -82,20 +82,31 @@ public class PlotPane extends JPanel
     setBorder(BorderFactory.createLineBorder(Color.black));
   }
 
-  public void addPoints(final Iterable<Point2D> points, final Stroke stroke)
+  public void addPoints(final Iterable<Point2D> points,
+                        final Plot.Mode mode,
+                        final Color color,
+                        final Stroke stroke)
   {
-    for (final Point2D point : points) {
-      graphic.addPoint(point, 2, true, Color.RED, stroke);
+    switch (mode) {
+    case LINE:
+      Point2D previousPoint = null;
+      for (final Point2D point : points) {
+        if (previousPoint != null) {
+          graphic.addLine(previousPoint, point, color,
+                          stroke != null ?
+                          stroke : PlotPane.DEFAULT_LINE_STROKE);
+        }
+        previousPoint = point;
+      }
+      break;
+    case DOT:
+      for (final Point2D point : points) {
+        graphic.addPoint(point, 2, true, color, null);
+      }
+      break;
+    default:
+      assert false : "unexpected case fall-through: " + mode;
     }
-  }
-
-  public void addLine(final double x1, final double y1,
-                      final double x2, final double y2,
-                      final Color color, final Stroke stroke)
-  {
-    graphic.addLine(new Point2D.Double(x1, y1),
-                    new Point2D.Double(x2, y2),
-                    color, stroke);
   }
 
   public void setTickLabelRenderer(final TickLabelRenderer tickLabelRenderer)

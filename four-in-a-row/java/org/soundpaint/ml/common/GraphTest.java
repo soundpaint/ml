@@ -102,8 +102,10 @@ public class GraphTest
     final var b = new Variable<Double>(0.87);
     session.run(m);
     session.run(b);
-    Plot.show("Linear Regression", "Points Before Regression",
-              xData.getOutputValue(), yLabel.getOutputValue());
+    final Plot plot = new Plot("Linear Regression", "Points Before Regression");
+    plot.plot(xData.getOutputValue(), yLabel.getOutputValue(),
+              Plot.Mode.DOT, null);
+    plot.show();
   }
 
   public static void main(final String argv[])

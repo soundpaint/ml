@@ -28,6 +28,11 @@ import javax.swing.JOptionPane;
 
 public class Plot
 {
+  public enum Mode
+  {
+    LINE, DOT
+  };
+
   private static class Point2DFactory
     implements BiFunction<Double, Double, Point2D>
   {
@@ -43,22 +48,54 @@ public class Plot
     }
   }
 
-  public static void show(final String windowTitle,
-                          final String diagramLabel,
-                          final Iterable<Double> x,
-                          final Iterable<Double> y)
+  private final String windowTitle;
+  private final PlotPane plotPane;
+  private int currentAutoColor;
+
+  private Plot()
+  {
+    throw new UnsupportedOperationException("unsupported default constructor");
+  }
+
+  public Plot(final String windowTitle,
+              final String diagramLabel)
+  {
+    this.windowTitle = windowTitle;
+    plotPane = new PlotPane(diagramLabel);
+    currentAutoColor = 0;
+  }
+
+  private static final float hueShift = 8.77f / 16.0f;
+  private static final float int2unitScale = 1.0f / 256.0f;
+
+  private Color nextAutoColor()
+  {
+    final float hue = hueShift * (currentAutoColor & 0xff);
+    final float saturation = 1.0f;
+    final float brightness =
+      0.25f + 0.75f * int2unitScale *
+      ((Integer.reverse((~currentAutoColor) >> 3) >> 24) & 0xff);
+    final Color color = Color.getHSBColor(hue, saturation, brightness);
+    currentAutoColor++;
+    return color;
+  }
+
+  public void plot(final Iterable<Double> x,
+                   final Iterable<Double> y,
+                   final Mode mode,
+                   final Color color)
   {
     final var xStream = StreamSupport.stream(x.spliterator(), false);
     final var yStream = StreamSupport.stream(y.spliterator(), false);
     final var points =
       StreamUtils.zipToList(xStream, yStream,
                             Point2DFactory.getDefaultInstance());
-    final PlotPane plotPane = new PlotPane(diagramLabel);
-    plotPane.addPoints(points, null);
-    /*
-    plotPane.addLine(-7.0, -7.0, 10.0, 10.0,
-                     Color.BLUE, PlotPane.DEFAULT_LINE_STROKE); // DEBUG
-    */
+    plotPane.addPoints(points, mode,
+                       color != null ? color : nextAutoColor(), null);
+  }
+
+  public void show()
+  {
     plotPane.addAxes();
     JOptionPane.
       showMessageDialog(null,
