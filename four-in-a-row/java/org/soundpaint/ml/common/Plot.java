@@ -80,6 +80,14 @@ public class Plot
     return color;
   }
 
+  public void plot(final Node<Matrix, Matrix> x,
+                   final Node<Matrix, Matrix> y,
+                   final Mode mode,
+                   final Color color)
+  {
+    plot(x.getOutputValue(), y.getOutputValue(), mode, color);
+  }
+
   public void plot(final Iterable<Double> x,
                    final Iterable<Double> y,
                    final Mode mode,

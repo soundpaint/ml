@@ -125,10 +125,8 @@ public class GraphTest
     session.run(yPredPlot);
 
     final Plot plot = new Plot("Linear Regression", "Points Before Regression");
-    plot.plot(xTest.getOutputValue(), yPredPlot.getOutputValue(),
-              Plot.Mode.LINE, Color.RED);
-    plot.plot(xData.getOutputValue(), yLabel.getOutputValue(),
-              Plot.Mode.DOT, Color.BLUE);
+    plot.plot(xTest, yPredPlot, Plot.Mode.LINE, Color.RED);
+    plot.plot(xData, yLabel, Plot.Mode.DOT, Color.BLUE);
     plot.show();
   }
 
