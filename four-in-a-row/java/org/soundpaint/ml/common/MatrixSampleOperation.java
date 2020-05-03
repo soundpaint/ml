@@ -1,5 +1,5 @@
 /*
- * @(#)MatrixAddOperation.java 1.00 20/03/08
+ * @(#)MatrixSampleOperation.java 1.00 20/05/03
  *
  * Copyright (C) 2020 Jürgen Reuter
  *
@@ -20,27 +20,30 @@ package org.soundpaint.ml.common;
 
 import java.util.List;
 
-public class MatrixAddOperation extends Operation<Matrix, Matrix>
+public class MatrixSampleOperation extends Operation<Matrix, Matrix>
 {
-  public MatrixAddOperation(final Node<Matrix, Matrix> x,
-                            final double y)
+  private final SampleFunction function;
+
+  public MatrixSampleOperation(final Node<Matrix, Matrix> x,
+                               final double value)
   {
-    this(x, new MatrixSampleOperation(x, y));
+    this(x, new ConstValueSampler(value));
   }
 
-  public MatrixAddOperation(final Node<Matrix, Matrix> x,
-                            final Node<Matrix, Matrix> y)
+  public MatrixSampleOperation(final Node<Matrix, Matrix> x,
+                               final SampleFunction function)
   {
-    super("matrixaddop", List.of(x, y));
+    super("matrixsampleop", List.of(x));
+    this.function = function;
   }
 
   public Matrix performOperation()
   {
-    if (inputValues.size() != 2) {
-      throw new IllegalArgumentException("require 2 operands, got: " +
+    if (inputValues.size() != 1) {
+      throw new IllegalArgumentException("require 1 operand, got: " +
                                          inputValues.size());
     }
-    return inputValues.get(0).add(inputValues.get(1));
+    return inputValues.get(0).apply(function);
   }
 }
 

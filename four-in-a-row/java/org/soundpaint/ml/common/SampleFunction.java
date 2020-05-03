@@ -21,71 +21,8 @@ package org.soundpaint.ml.common;
 import java.util.Random;
 import java.util.function.Function;
 
-public enum SampleFunction implements Function<Void, Double>
+public interface SampleFunction extends Function<Void, Double>
 {
-  ONES("ones")
-  {
-    public Double apply(final Void __)
-    {
-      return 1.0;
-    }
-  },
-
-  RANDOM_UNIFORM("random uniform")
-  {
-    public Double apply(final Void __)
-    {
-      final Random random = RandomSingleton.getInstance();
-      return random.nextDouble();
-    }
-  },
-
-  RANDOM_NORMAL("random normal")
-  {
-    static final double TWO_PI = 2.0 * Math.PI;
-    private double z1 = 0.0;
-    private boolean needDraw = false;
-
-    /**
-     * Box-Müller Transform
-     */
-    public Double apply(final Void __)
-    {
-      final Random random = RandomSingleton.getInstance();
-
-      needDraw = !needDraw;
-      if (!needDraw)
-        return z1;
-
-      final double u1 = 1.0 - random.nextDouble(); // exclude 0.0
-      final double u2 = random.nextDouble();
-
-      final double z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(TWO_PI * u2);
-      z1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(TWO_PI * u2);
-
-      return z0;
-    }
-  };
-
-  private final String id;
-
-  private SampleFunction() {
-    throw new UnsupportedOperationException("unsupported default constructor");
-  }
-
-  private SampleFunction(final String id) {
-    this.id = id;
-  }
-
-  public String getId()
-  {
-    return id;
-  }
-
-  public String toString()
-  {
-    return "sample function " + id;
-  }
 }
 
 /*

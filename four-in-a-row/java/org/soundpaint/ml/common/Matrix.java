@@ -72,17 +72,23 @@ public class Matrix implements Iterable<Double>
   private final int rows;
   private final int columns;
 
+  /**
+   * Creates columns×1 matrix filled with 1 values.
+   */
   public static Matrix createOnes(final int columns)
   {
     return createOnes(columns, 1);
   }
 
+  /**
+   * Creates columns×rows matrix filled with 1 values.
+   */
   public static Matrix createOnes(final int columns, final int rows)
   {
     final double[][] elements = new double[rows][columns];
     for (var row = 0; row < rows; row++) {
       for (var column = 0; column < columns; column++) {
-        elements[row][column] = SampleFunction.ONES.apply(null);
+        elements[row][column] = BasicSampleFunction.ONES.apply(null);
       }
     }
     return new Matrix(elements);
@@ -134,7 +140,7 @@ public class Matrix implements Iterable<Double>
     for (var row = 0; row < rows; row++) {
       for (var column = 0; column < columns; column++) {
         elements[row][column] =
-          minValue + interval * SampleFunction.RANDOM_UNIFORM.apply(null);
+          minValue + interval * BasicSampleFunction.RANDOM_UNIFORM.apply(null);
       }
     }
     return new Matrix(elements);
@@ -156,7 +162,7 @@ public class Matrix implements Iterable<Double>
     for (var row = 0; row < rows; row++) {
       for (var column = 0; column < columns; column++) {
         elements[row][column] =
-          SampleFunction.RANDOM_NORMAL.apply(null) * σ + µ;
+          BasicSampleFunction.RANDOM_NORMAL.apply(null) * σ + µ;
       }
     }
     return new Matrix(elements);
@@ -229,6 +235,17 @@ public class Matrix implements Iterable<Double>
   {
     final Iterable<Double> iterable = () -> iterator();
     return StreamSupport.stream(iterable.spliterator(), false);
+  }
+
+  public Matrix apply(final SampleFunction function)
+  {
+    final double[][] sum = new double[rows][columns];
+    for (int row = 0; row < rows; row++) {
+      for (int column = 0; column < columns; column++) {
+        sum[row][column] = function.apply(null);
+      }
+    }
+    return new Matrix(sum);
   }
 
   public Matrix add(final Matrix other)

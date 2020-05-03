@@ -18,6 +18,9 @@
  */
 package org.soundpaint.ml.common;
 
+import java.awt.Color;
+import java.util.List;
+
 public class GraphTest
 {
   private void test1() {
@@ -102,9 +105,30 @@ public class GraphTest
     final var b = new Variable<Double>(0.87);
     session.run(m);
     session.run(b);
+    final List<StreamUtils.Pair<Double, Double>> zipped =
+      StreamUtils.zipToList(xData.getOutputValue().stream(),
+                            yLabel.getOutputValue().stream(),
+                            new StreamUtils.PairFactory<Double,Double>());
+    double error = 0.0;
+    for (var pair : zipped) {
+      final double yHat = m.getOutputValue() * pair.a + b.getOutputValue();
+      error += Math.pow(pair.b - yHat, 2);
+    }
+
+    final var finalSlope = 1.0; // TODO: Compute this value.
+    final var finalIntercept = -1.0; // TODO: Compute this value.
+    final var xTest =
+      new Variable<Matrix>(Matrix.createLinearSpace(10, -1.0, 11.0));
+    final var yPredPlot =
+      new MatrixAddOperation(new MatrixScaleOperation(finalSlope, xTest),
+                             finalIntercept);
+    session.run(yPredPlot);
+
     final Plot plot = new Plot("Linear Regression", "Points Before Regression");
+    plot.plot(xTest.getOutputValue(), yPredPlot.getOutputValue(),
+              Plot.Mode.LINE, Color.RED);
     plot.plot(xData.getOutputValue(), yLabel.getOutputValue(),
-              Plot.Mode.DOT, null);
+              Plot.Mode.DOT, Color.BLUE);
     plot.show();
   }
 

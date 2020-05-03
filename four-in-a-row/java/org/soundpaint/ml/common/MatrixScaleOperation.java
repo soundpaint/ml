@@ -1,5 +1,5 @@
 /*
- * @(#)MatrixAddOperation.java 1.00 20/03/08
+ * @(#)MatrixScaleOperation.java 1.00 20/05/03
  *
  * Copyright (C) 2020 Jürgen Reuter
  *
@@ -20,18 +20,19 @@ package org.soundpaint.ml.common;
 
 import java.util.List;
 
-public class MatrixAddOperation extends Operation<Matrix, Matrix>
+public class MatrixScaleOperation extends Operation<Matrix, Matrix>
 {
-  public MatrixAddOperation(final Node<Matrix, Matrix> x,
-                            final double y)
+  public MatrixScaleOperation(final double scale,
+                              final Matrix x)
   {
-    this(x, new MatrixSampleOperation(x, y));
+    this(scale, new Variable<Matrix>(x));
   }
 
-  public MatrixAddOperation(final Node<Matrix, Matrix> x,
-                            final Node<Matrix, Matrix> y)
+  public MatrixScaleOperation(final double scale,
+                              final Node<Matrix, Matrix> x)
   {
-    super("matrixaddop", List.of(x, y));
+    super("matrixscaleop",
+          List.of(new Variable<Matrix>(new Matrix(new double[][] {{scale}})), x));
   }
 
   public Matrix performOperation()
@@ -40,7 +41,7 @@ public class MatrixAddOperation extends Operation<Matrix, Matrix>
       throw new IllegalArgumentException("require 2 operands, got: " +
                                          inputValues.size());
     }
-    return inputValues.get(0).add(inputValues.get(1));
+    return inputValues.get(1).scale(inputValues.get(0).getElementAt(0, 0));
   }
 }
 
