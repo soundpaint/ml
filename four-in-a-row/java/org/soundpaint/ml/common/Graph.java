@@ -20,6 +20,7 @@ package org.soundpaint.ml.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Graph
 {
@@ -61,6 +62,18 @@ public class Graph
     operations.clear();
     placeholders.clear();
     variables.clear();
+  }
+
+  /**
+   * Create initialization operation for all currently known global
+   * variables.
+   */
+  public Operation<Void, Void> createGlobalVariablesInitializer()
+  {
+    return new GroupOperation<Void>(variables.
+                                    stream().
+                                    map(Variable::getInitializer).
+                                    collect(Collectors.toList()));
   }
 }
 

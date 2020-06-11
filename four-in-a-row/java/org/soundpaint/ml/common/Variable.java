@@ -18,9 +18,12 @@
  */
 package org.soundpaint.ml.common;
 
+import java.util.ArrayList;
+
 public class Variable<T> extends Node<T, T>
 {
   private T value;
+  private Initializer<T> initializer;
 
   public Variable()
   {
@@ -29,19 +32,43 @@ public class Variable<T> extends Node<T, T>
 
   public Variable(final T value)
   {
+    this(value, null);
+  }
+
+  public Variable(final T value, final Initializer<T> initializer)
+  {
     super("variable(" + value + ")");
+    if ((value == null) && (initializer == null)) {
+      throw new IllegalArgumentException("Variable value and initializer can not both be null");
+    }
     this.value = value;
+    this.initializer = initializer;
     Graph.getDefaultInstance().add(this);
   }
 
   public static <T> Variable<T> create(final T value)
   {
-    return new Variable<T>(value);
+    return create(value, new ConstantInitializer<T>(value));
+  }
+
+  public static <T> Variable<T> create(final T value,
+                                       final Initializer<T> initializer)
+  {
+    return new Variable<T>(value, initializer);
   }
 
   public static Variable<Matrix> createMatrix(final double[][] elements)
   {
     return create(new Matrix(elements));
+  }
+
+  public static Variable<Matrix> createMatrix(final double[][] elements,
+                                              final Initializer<Double> elementInitializer)
+  {
+    final Matrix matrix = new Matrix(elements);
+    final MatrixInitializer initializer =
+      new MatrixInitializer(matrix, elementInitializer);
+    return create(matrix, initializer);
   }
 
   public static Variable<Matrix> createOnes(final int count)
@@ -109,6 +136,25 @@ public class Variable<T> extends Node<T, T>
   public void update()
   {
     setOutputValue(getValue());
+  }
+
+  public Operation<Void, Void> getInitializer()
+  {
+    return
+      new Operation<Void, Void>("initvar",
+                                new ArrayList<Node<Void, Void>>())
+    {
+      public Void performOperation()
+      {
+        if (initializer != null) {
+          value = initializer.createInitialValue();
+        } else {
+          // no initializer available => keep value of variable
+          // unmodified
+        }
+        return null;
+      }
+    };
   }
 }
 

@@ -110,6 +110,11 @@ public class GraphTest
       final double yHat = m.getOutputValue() * pair.a + b.getOutputValue();
       error += Math.pow(pair.b - yHat, 2);
     }
+    System.out.println("error=" + error);
+
+    final var init =
+      Graph.getDefaultInstance().createGlobalVariablesInitializer();
+    session.run(init);
 
     final var finalSlope = 1.0; // TODO: Compute this value.
     final var finalIntercept = -1.0; // TODO: Compute this value.

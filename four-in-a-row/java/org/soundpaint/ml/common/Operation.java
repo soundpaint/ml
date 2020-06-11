@@ -24,7 +24,7 @@ import java.util.List;
 public abstract class Operation<U, V> extends Node<U, V>
 {
   protected List<U> inputValues;
-  private List<Node<?, U>> inputNodes;
+  private List<? extends Node<?, U>> inputNodes;
   private Node<U, V> outputNode;
 
   private Operation()
@@ -32,7 +32,7 @@ public abstract class Operation<U, V> extends Node<U, V>
     throw new UnsupportedOperationException("unsupported default constructor");
   }
 
-  public Operation(final String id, final List<Node<?, U>> inputNodes)
+  public Operation(final String id, final List<? extends Node<?, U>> inputNodes)
   {
     super(id);
     if (inputNodes == null) {
@@ -47,7 +47,7 @@ public abstract class Operation<U, V> extends Node<U, V>
     Graph.getDefaultInstance().add(this);
   }
 
-  public List<Node<?, U>> getInputNodes()
+  public List<? extends Node<?, U>> getInputNodes()
   {
     return inputNodes;
   }

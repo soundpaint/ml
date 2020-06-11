@@ -66,7 +66,7 @@ public abstract class Node<U, V>
   private void recurse(final List<Node<?, ?>> nodesPostOrder)
   {
     if (this instanceof Operation) {
-      final List<Node<?, U>> inputNodes =
+      final List<? extends Node<?, U>> inputNodes =
         ((Operation<U, V>)this).getInputNodes();
       for (final Node<?, U> inputNode : inputNodes) {
         inputNode.recurse(nodesPostOrder);
