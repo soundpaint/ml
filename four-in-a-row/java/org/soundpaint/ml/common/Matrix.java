@@ -210,13 +210,13 @@ public class Matrix implements Iterable<Double>
 
   public Matrix apply(final SampleFunction function)
   {
-    final double[][] sum = new double[rows][columns];
+    final double[][] elements = new double[rows][columns];
     for (int row = 0; row < rows; row++) {
       for (int column = 0; column < columns; column++) {
-        sum[row][column] = function.apply(null);
+        elements[row][column] = function.apply(null);
       }
     }
-    return new Matrix(sum);
+    return new Matrix(elements);
   }
 
   public Matrix add(final Matrix other)
@@ -270,11 +270,11 @@ public class Matrix implements Iterable<Double>
     final double[][] product = new double[rows][other.columns];
     for (int otherColumn = 0; otherColumn < other.columns; otherColumn++) {
       for (int row = 0; row < rows; row++) {
-        double sum = 0.0;
+        double dotSum = 0.0;
         for (int column = 0; column < columns; column++) {
-          sum += elements[row][column] * other.elements[column][otherColumn];
+          dotSum += elements[row][column] * other.elements[column][otherColumn];
         }
-        product[row][otherColumn] = sum;
+        product[row][otherColumn] = dotSum;
       }
     }
     final Matrix result = new Matrix(product);

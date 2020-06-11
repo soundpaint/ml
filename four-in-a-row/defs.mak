@@ -17,7 +17,7 @@
 # <https://www.gnu.org/licenses/>.
 #
 # For updates and more info or contacting the author, visit:
-# <https://github.com/soundpaint/art-frame>
+# <https://github.com/soundpaint/ml>
 #
 # Author's web site: www.juergen-reuter.de
 
