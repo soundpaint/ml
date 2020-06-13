@@ -26,7 +26,14 @@ public class Session
 {
   public Object run(final Node<?, ?> targetNode)
   {
-    final List<Node<?, ?>> nodesPostOrder = targetNode.traversePostOrder();
+    final var targetNodes = new ArrayList<Node<?, ?>>();
+    targetNodes.add(targetNode);
+    return run(targetNodes).get(0);
+  }
+
+  public List<Object> run(final List<Node<?, ?>> targetNodes)
+  {
+    final List<Node<?, ?>> nodesPostOrder = Node.traversePostOrder(targetNodes);
     for (final Node<?, ?> node : nodesPostOrder) {
       node.update();
       /*
@@ -36,7 +43,11 @@ public class Session
       }
       */
     }
-    return targetNode.getOutputValue();
+    final List<Object> result = new ArrayList<Object>();
+    for (final Node<?, ?> targetNode : targetNodes) {
+      result.add(targetNode.getOutputValue());
+    }
+    return result;
   }
 }
 

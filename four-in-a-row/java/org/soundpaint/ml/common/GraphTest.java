@@ -116,8 +116,9 @@ public class GraphTest
       Graph.getDefaultInstance().createGlobalVariablesInitializer();
     session.run(init);
 
-    final var finalSlope = 1.0; // TODO: Compute this value.
-    final var finalIntercept = -1.0; // TODO: Compute this value.
+    final List<Object> finalResult = session.run(List.of(m, b));
+    final var finalSlope = (Double)finalResult.get(0);
+    final var finalIntercept = (Double)finalResult.get(1);
     final var xTest = Variable.createLinearSpace(-1.0, 11.0, 10);
 
     // # y = mx + b

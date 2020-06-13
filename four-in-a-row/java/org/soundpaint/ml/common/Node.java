@@ -75,10 +75,12 @@ public abstract class Node<U, V>
     nodesPostOrder.add(this);
   }
 
-  public List<Node<?, ?>> traversePostOrder()
+  public static List<Node<?, ?>> traversePostOrder(final List<Node<?, ?>> nodes)
   {
     final List<Node<?, ?>> nodesPostOrder = new ArrayList<Node<?, ?>>();
-    recurse(nodesPostOrder);
+    for (final Node<?, ?> node : nodes) {
+      node.recurse(nodesPostOrder);
+    }
     return nodesPostOrder;
   }
 
