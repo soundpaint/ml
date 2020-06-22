@@ -18,13 +18,42 @@
  */
 package org.soundpaint.ml.common;
 
+import java.util.HashMap;
 import java.util.Random;
+import java.util.Set;
 
 public class RandomUtils
 {
   private static final Random RANDOM_INSTANCE = new Random();
 
+  /**
+   * Return singleton instance of java.util.Random object
+   * to ensure global uniform distribution.
+   */
   public static Random getRandom() { return RANDOM_INSTANCE; }
+
+  /**
+   * Select a set of #<code>count</code> integers with uniform
+   * distribution from the range between 0 (inclusive) and
+   * <code>bound</code> (exclusive), ensuring that there are no
+   * duplicates in the result.
+   */
+  public static Set<Integer> createSelection(final int bound, final int count)
+  {
+    if (count > bound) {
+      throw new IllegalArgumentException("count may not be greater than bound");
+    }
+    final Random random = getRandom();
+    final HashMap<Integer, Integer> selected = new HashMap<Integer, Integer>();
+    for (int select = 0; select < count; select++) {
+      int value = random.nextInt(bound - select);
+      while (selected.containsKey(value)) {
+        value = selected.get(value);
+      }
+      selected.put(value, bound - select - 1);
+    }
+    return selected.keySet();
+  }
 }
 
 /*
