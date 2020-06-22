@@ -36,19 +36,71 @@ import java.util.stream.StreamSupport;
 // For now, we assume Double as the only base type of matrices.
 public class Matrix implements Iterable<Double>
 {
+  public enum Direction { HORIZONTAL, VERTICAL };
+
   private class ElementIterator implements Iterator<Double>
   {
+    private final Direction direction;
+    private final int rowsBound;
+    private final int columnsBound;
     private int row, column;
 
     private ElementIterator()
     {
+      direction = null;
       row = 0;
       column = 0;
+      rowsBound = rows;
+      columnsBound = columns;
+    }
+
+    private ElementIterator(final Direction direction, final int index)
+    {
+      this.direction = direction;
+      switch (direction) {
+      case HORIZONTAL:
+        row = index;
+        column = 0;
+        rowsBound = index;
+        columnsBound = columns;
+        break;
+      case VERTICAL:
+        row = 0;
+        column = index;
+        rowsBound = rows;
+        columnsBound = index;
+        break;
+      default:
+        throw new IllegalStateException("unexpected case fall-through");
+      }
     }
 
     public boolean hasNext()
     {
       return (row < rows) && (column < columns);
+    }
+
+    private void updateIndices()
+    {
+      if (direction != null) {
+        switch (direction) {
+        case HORIZONTAL:
+          column++;
+          break;
+        case VERTICAL:
+          row++;
+          break;
+        default:
+          throw new IllegalStateException("unexpected case fall-through");
+        }
+      } else {
+        if (column < columns) {
+          column++;
+        } else if (row < rows) {
+          column = 0;
+          row++;
+        }
+      }
     }
 
     public Double next()
@@ -57,12 +109,7 @@ public class Matrix implements Iterable<Double>
         throw new NoSuchElementException();
       }
       final Double next = elements[row][column];
-      if (column < columns) {
-        column++;
-      } else if (row < rows) {
-        column = 0;
-        row++;
-      }
+      updateIndices();
       return next;
     }
   }
@@ -219,6 +266,16 @@ public class Matrix implements Iterable<Double>
                            final Double element)
   {
     elements[row][column] = element;
+  }
+
+  private Iterator<Double> rowIterator(final int row)
+  {
+    return new ElementIterator(Direction.VERTICAL, row);
+  }
+
+  private Iterator<Double> columnIterator(final int column)
+  {
+    return new ElementIterator(Direction.HORIZONTAL, column);
   }
 
   public Iterator<Double> iterator()
