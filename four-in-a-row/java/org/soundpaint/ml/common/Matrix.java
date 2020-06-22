@@ -281,14 +281,28 @@ public class Matrix implements Iterable<Double>
     return result;
   }
 
+  private final static int MAX_ROWS_PRINT = 10;
+  private final static int MAX_COLUMNS_PRINT = 10;
+
   private String rowToString(final int row)
   {
     final StringBuilder s = new StringBuilder();
-    for (int column = 0; column < columns; column++) {
-      if (s.length() > 0) {
-        s.append(", ");
+    final boolean abbreviate = columns > MAX_COLUMNS_PRINT;
+    if (abbreviate) {
+      s.append(elements[row][0]);
+      s.append(", ");
+      s.append(elements[row][1]);
+      s.append(", ");
+      s.append(elements[row][2]);
+      s.append(", …, ");
+      s.append(elements[row][columns - 1]);
+    } else {
+      for (int column = 0; column < columns; column++) {
+        if (s.length() > 0) {
+          s.append(", ");
+        }
+        s.append(elements[row][column]);
       }
-      s.append(elements[row][column]);
     }
     return "{" + s + "}";
   }
@@ -296,11 +310,22 @@ public class Matrix implements Iterable<Double>
   public String contentsToString()
   {
     final StringBuilder s = new StringBuilder();
-    for (int row = 0; row < rows; row++) {
-      if (s.length() > 0) {
-        s.append(", ");
+    final boolean abbreviate = rows > MAX_ROWS_PRINT;
+    if (abbreviate) {
+      s.append(rowToString(0));
+      s.append(", ");
+      s.append(rowToString(1));
+      s.append(", ");
+      s.append(rowToString(2));
+      s.append(", …, ");
+      s.append(rowToString(rows - 1));
+    } else {
+      for (int row = 0; row < rows; row++) {
+        if (s.length() > 0) {
+          s.append(", ");
+        }
+        s.append(rowToString(row));
       }
-      s.append(rowToString(row));
     }
     return "{" + s + "}";
   }
