@@ -20,6 +20,9 @@ package org.soundpaint.ml.common;
 
 import java.util.List;
 
+/**
+ * Groups a given list of operations as a single operation.
+ */
 public class GroupOperation<T> extends Operation<T, Void>
 {
   public GroupOperation(final List<Operation<?, T>> operations)
