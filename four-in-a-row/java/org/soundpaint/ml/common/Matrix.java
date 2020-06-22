@@ -18,6 +18,7 @@
  */
 package org.soundpaint.ml.common;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -309,6 +310,132 @@ public class Matrix implements Iterable<Double>
     return new Matrix(elements);
   }
 
+  private static void copyElements(final Matrix sourceMatrix,
+                                   final double[][] targetElements,
+                                   final int rowOffset,
+                                   final int columnOffset)
+  {
+    for (var row = 0; row < sourceMatrix.rows; row++) {
+      for (var column = 0; column < sourceMatrix.columns; column++) {
+        targetElements[row + rowOffset][column + columnOffset] =
+          sourceMatrix.elements[row][column];
+      }
+    }
+  }
+
+  public static Matrix concat(final Matrix a,
+                              final Matrix b,
+                              final Direction direction)
+  {
+    final int rows;
+    final int columns;
+    final double[][] elements;
+    switch (direction) {
+    case HORIZONTAL:
+      rows = Math.max(a.rows, b.rows);
+      columns = a.columns + b.columns;
+      elements = new double[rows][columns];
+      copyElements(a, elements, 0, 0);
+      copyElements(b, elements, 0, a.columns);
+      break;
+    case VERTICAL:
+      rows = a.rows + b.rows;
+      columns = Math.max(a.columns, b.columns);
+      elements = new double[rows][columns];
+      copyElements(a, elements, 0, 0);
+      copyElements(b, elements, b.rows, 0);
+      break;
+    default:
+      throw new IllegalStateException("unexpected case fall-through");
+    }
+    return new Matrix(elements);
+  }
+
+  public Matrix transpose()
+  {
+    final double[][] transposed = new double[columns][rows];
+    for (int row = 0; row < rows; row++) {
+      for (int column = 0; column < columns; column++) {
+        transposed[column][row] = elements[row][column];
+      }
+    }
+    return new Matrix(transposed);
+  }
+
+  private static void copyElements(final Matrix sourceMatrix,
+                                   final int sourceRowIndex,
+                                   final int sourceColumnIndex,
+                                   final int rows,
+                                   final int columns,
+                                   final double[][] targetElements,
+                                   final int rowOffset,
+                                   final int columnOffset)
+  {
+    for (var row = sourceRowIndex;
+         row < sourceRowIndex + rows;
+         row++) {
+      for (var column = sourceColumnIndex;
+           column < sourceColumnIndex + columns;
+           column++) {
+        final double value = sourceMatrix.elements[row][column];
+        targetElements
+          [row - sourceRowIndex + rowOffset]
+          [column - sourceColumnIndex + columnOffset] =
+          value;
+      }
+    }
+  }
+
+  public Matrix sample(final Direction direction,
+                       final int count)
+  {
+    final double[][] samples;
+    switch (direction) {
+    case HORIZONTAL:
+      samples = new double[rows][count];
+      int targetColumn = 0;
+      for (final int column : RandomUtils.createSelection(columns, count)) {
+        copyElements(this, 0, column, rows, 1,
+                     samples, 0, targetColumn++);
+      }
+      break;
+    case VERTICAL:
+      samples = new double[count][columns];
+      int targetRow = 0;
+      for (final int row : RandomUtils.createSelection(rows, count)) {
+        copyElements(this, row, 0, 1, columns,
+                     samples, targetRow++, 0);
+      }
+      break;
+    default:
+      throw new IllegalStateException("unexpected case fall-through");
+    }
+    return new Matrix(samples);
+  }
+
+  public void plot(final int indexX,
+                   final int indexY,
+                   final Direction direction)
+  {
+    final Plot plot = new Plot(id, id);
+    final Iterable<Double> xData;
+    final Iterable<Double> yData;
+    switch (direction) {
+    case HORIZONTAL:
+      xData = () -> columnIterator(indexX);
+      yData = () -> columnIterator(indexY);
+      break;
+    case VERTICAL:
+      xData = () -> rowIterator(indexX);
+      yData = () -> rowIterator(indexY);
+      break;
+    default:
+      throw new IllegalStateException("unexpected case fall-through");
+    }
+    plot.plot(xData, yData, Plot.Mode.DOT, Color.BLUE);
+    plot.show();
+  }
+
   public Matrix add(final Matrix other)
   {
     if (other == null) {
@@ -333,6 +460,17 @@ public class Matrix implements Iterable<Double>
       }
     }
     return new Matrix(sum);
+  }
+
+  public Matrix add(final Double summand)
+  {
+    final double[][] scaled = new double[rows][columns];
+    for (int row = 0; row < rows; row++) {
+      for (int column = 0; column < columns; column++) {
+        scaled[row][column] = elements[row][column] + summand;
+      }
+    }
+    return new Matrix(scaled);
   }
 
   public Matrix scale(final Double scale)
