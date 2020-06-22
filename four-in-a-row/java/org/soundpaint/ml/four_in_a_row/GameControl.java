@@ -81,7 +81,7 @@ public class GameControl
     throws IOException
   {
     System.out.print("clearing data set \"" + dataSetDir.getName() +
-                     "\"... ");
+                     "\"… ");
     final File[] dataRecords =
       dataSetDir.listFiles(DataRecordFilter.getDefaultInstance());
     for (final File dataRecord : dataRecords) {
@@ -105,7 +105,7 @@ public class GameControl
     throws IOException
   {
     System.out.print("creating data set \"" + dataSetDir.getName() +
-                     "\"... ");
+                     "\"… ");
     for (int recordId = 0; recordId < size; recordId++) {
       createDataRecord(dataSetDir, recordId);
     }
@@ -140,7 +140,7 @@ public class GameControl
 
   private void checkDataSet(final String dataSetId)
   {
-    System.out.print("checking data set \"" + dataSetId + "\"... ");
+    System.out.print("checking data set \"" + dataSetId + "\"… ");
     final Path dirPath = Paths.get(dataSetsPath, dataSetId);
     final File[] dataRecords =
       dirPath.toFile().listFiles(DataRecordFilter.getDefaultInstance());

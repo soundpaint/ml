@@ -121,8 +121,8 @@ public class PlotPane extends JPanel
   private static final double tickYCap = 10.0;
 
   /**
-   * Return a number d from the set (..., 0.001, 0.01, 0.1, 1.0, 10.0,
-   * 100.0, 1000.0, ...) such that d * extent is in the range [0.0,
+   * Return a number d from the set (…, 0.001, 0.01, 0.1, 1.0, 10.0,
+   * 100.0, 1000.0, …) such that d * extent is in the range [0.0,
    * 10.0) for any positive value of extent.  If extent is 0.0, return
    * 1.0.
    */
