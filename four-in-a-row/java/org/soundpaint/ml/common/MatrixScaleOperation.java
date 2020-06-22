@@ -32,7 +32,7 @@ public class MatrixScaleOperation extends Operation<Matrix, Matrix>
                               final Node<Matrix, Matrix> x)
   {
     super("matrixscaleop",
-          List.of(new Variable<Matrix>(new Matrix(new double[][] {{scale}})), x));
+          List.of(new Variable<Matrix>(Matrix.fromArray(new double[][] {{scale}})), x));
   }
 
   public Matrix performOperation()

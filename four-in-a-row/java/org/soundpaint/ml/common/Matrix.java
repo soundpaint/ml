@@ -205,6 +205,24 @@ public class Matrix implements Iterable<Double>
     return new Matrix(elements);
   }
 
+  public static Matrix fromArray(final double[][] elements)
+  {
+    final int rows = elements.length;
+    int columns = 0;
+    for (int row = 0; row < rows; row++) {
+      if (elements[row].length > columns) {
+        columns = elements[row].length;
+      }
+    }
+    final double[][] internalElements = new double[rows][columns];
+    for (int row = 0; row < rows; row++) {
+      for (int column = 0; column < elements[row].length; column++) {
+        internalElements[row][column] = elements[row][column];
+      }
+    }
+    return new Matrix(internalElements);
+  }
+
   private Matrix()
   {
     throw new UnsupportedOperationException("unsupported default constructor");
@@ -215,26 +233,17 @@ public class Matrix implements Iterable<Double>
     this(new double[][] {{scale, 0.0}, {0.0, scale}});
   }
 
-  public Matrix(final double[][] elements)
+  private Matrix(final double[][] elements)
   {
-    if (elements == null) {
-      throw new NullPointerException("elements");
-    }
+    assert elements != null : "unexpected null elements";
     id = "matrix-" + Uid.createUniqueId();
     rows = elements.length;
-    int columns = 0;
+    columns = rows > 0 ? elements[0].length : 0;
     for (int row = 0; row < rows; row++) {
-      if (elements[row].length > columns) {
-        columns = elements[row].length;
-      }
+      assert
+        elements[row].length == columns : "elements must have square shape";
     }
-    this.columns = columns;
-    this.elements = new double[rows][columns];
-    for (int row = 0; row < rows; row++) {
-      for (int column = 0; column < elements[row].length; column++) {
-        this.elements[row][column] = elements[row][column];
-      }
-    }
+    this.elements = elements;
   }
 
   public String getId()

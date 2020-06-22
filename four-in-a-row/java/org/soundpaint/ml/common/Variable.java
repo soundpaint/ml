@@ -59,13 +59,13 @@ public class Variable<T> extends Node<T, T>
 
   public static Variable<Matrix> createMatrix(final double[][] elements)
   {
-    return create(new Matrix(elements));
+    return create(Matrix.fromArray(elements));
   }
 
   public static Variable<Matrix> createMatrix(final double[][] elements,
                                               final Initializer<Double> elementInitializer)
   {
-    final Matrix matrix = new Matrix(elements);
+    final Matrix matrix = Matrix.fromArray(elements);
     final MatrixInitializer initializer =
       new MatrixInitializer(matrix, elementInitializer);
     return create(matrix, initializer);
