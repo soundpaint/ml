@@ -60,7 +60,7 @@ public class GraphTest
   private void test3() {
     System.out.println("running test #3");
     Graph.getDefaultInstance().clear();
-    RandomSingleton.getInstance().setSeed(101);
+    RandomUtils.getRandom().setSeed(101);
     final FeedDictionary feedDictionary = new FeedDictionary();
 
     final var nFeatures = 10;
@@ -83,7 +83,7 @@ public class GraphTest
   private void test4() {
     System.out.println("running test #4");
     Graph.getDefaultInstance().clear();
-    RandomSingleton.getInstance().setSeed(101);
+    RandomUtils.getRandom().setSeed(101);
     final FeedDictionary feedDictionary = new FeedDictionary();
 
     final var xData0 = Variable.createLinearSpace(0.0, 10.0, 11);

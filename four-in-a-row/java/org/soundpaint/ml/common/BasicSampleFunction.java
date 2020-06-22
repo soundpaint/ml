@@ -35,7 +35,7 @@ public enum BasicSampleFunction implements SampleFunction
   {
     public Double apply(final Void __)
     {
-      final Random random = RandomSingleton.getInstance();
+      final Random random = RandomUtils.getRandom();
       return random.nextDouble();
     }
   },
@@ -51,7 +51,7 @@ public enum BasicSampleFunction implements SampleFunction
      */
     public Double apply(final Void __)
     {
-      final Random random = RandomSingleton.getInstance();
+      final Random random = RandomUtils.getRandom();
 
       needDraw = !needDraw;
       if (!needDraw)

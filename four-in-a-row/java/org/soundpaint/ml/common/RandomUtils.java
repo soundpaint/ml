@@ -1,5 +1,5 @@
 /*
- * @(#)Random.java 1.00 20/04/22
+ * @(#)RandomUtils.java 1.00 20/04/22
  *
  * Copyright (C) 2020 Jürgen Reuter
  *
@@ -20,11 +20,11 @@ package org.soundpaint.ml.common;
 
 import java.util.Random;
 
-public class RandomSingleton
+public class RandomUtils
 {
-  private static final Random INSTANCE = new Random();
+  private static final Random RANDOM_INSTANCE = new Random();
 
-  public static Random getInstance() { return INSTANCE; }
+  public static Random getRandom() { return RANDOM_INSTANCE; }
 }
 
 /*
