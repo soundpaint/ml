@@ -112,11 +112,16 @@ public class Variable<T> extends Node<T, T>
     return create(Matrix.createRandomUniform(columns, rows, min, max));
   }
 
+  public static Variable<Matrix> createRandomNormal(final int count)
+  {
+    return createRandomNormal(1.0, 0.0, count);
+  }
+
   public static Variable<Matrix> createRandomNormal(final double σ,
                                                     final double µ,
                                                     final int count)
   {
-    return create(Matrix.createRandomNormal(count, 1, σ, µ));
+    return createRandomNormal(σ, µ, count, 1);
   }
 
   public static Variable<Matrix> createRandomNormal(final double σ,

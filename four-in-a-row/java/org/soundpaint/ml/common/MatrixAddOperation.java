@@ -22,10 +22,34 @@ import java.util.List;
 
 public class MatrixAddOperation extends Operation<Matrix, Matrix>
 {
+  public MatrixAddOperation(final Matrix x,
+                            final double y)
+  {
+    this(new Variable<Matrix>(x), y);
+  }
+
   public MatrixAddOperation(final Node<Matrix, Matrix> x,
                             final double y)
   {
     this(x, new MatrixSampleOperation(x, y));
+  }
+
+  public MatrixAddOperation(final Matrix x,
+                            final Matrix y)
+  {
+    this(new Variable<Matrix>(x), new Variable<Matrix>(y));
+  }
+
+  public MatrixAddOperation(final Node<Matrix, Matrix> x,
+                            final Matrix y)
+  {
+    this(x, new Variable<Matrix>(y));
+  }
+
+  public MatrixAddOperation(final Matrix x,
+                            final Node<Matrix, Matrix> y)
+  {
+    this(new Variable<Matrix>(x), y);
   }
 
   public MatrixAddOperation(final Node<Matrix, Matrix> x,
