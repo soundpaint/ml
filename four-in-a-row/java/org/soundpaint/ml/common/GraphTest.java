@@ -133,6 +133,24 @@ public class GraphTest
     plot.show();
   }
 
+  private void test5() {
+    System.out.println("running test #5");
+    Graph.getDefaultInstance().clear();
+    RandomUtils.getRandom().setSeed(101);
+    final FeedDictionary feedDictionary = new FeedDictionary();
+
+    final var xData = Matrix.createLinearSpace(1001, 0.0, 10.0);
+    System.out.println("xData=" + xData);
+    final var noise = Matrix.createRandomNormal(1001);
+    System.out.println("noise=" + noise);
+    final var yTrue = xData.scale(0.5).add(5.0).add(noise);
+    final var myData =
+      Matrix.concat(xData, yTrue, Matrix.Direction.VERTICAL).transpose();
+    final var mySampleData = myData.sample(Matrix.Direction.VERTICAL, 250);
+    System.out.println(mySampleData);
+    mySampleData.plot(0, 1, Matrix.Direction.VERTICAL);
+  }
+
   public static void main(final String argv[])
   {
     final GraphTest graphTest = new GraphTest();
@@ -141,6 +159,7 @@ public class GraphTest
     graphTest.test2();
     graphTest.test3();
     graphTest.test4();
+    graphTest.test5();
     System.out.println("all tests done");
   }
 }
