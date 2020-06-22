@@ -124,7 +124,7 @@ public class Variable<T> extends Node<T, T>
                                                     final int columns,
                                                     final int rows)
   {
-    return create(Matrix.createRandomUniform(columns, rows, σ, µ));
+    return create(Matrix.createRandomNormal(columns, rows, σ, µ));
   }
 
   public T getValue()
