@@ -22,17 +22,14 @@ import java.util.HashMap;
 
 public class Placeholder<T> extends Node<T, T>
 {
-  private final FeedDictionary feedDictionary;
-
-  public Placeholder(final FeedDictionary feedDictionary)
+  public Placeholder()
   {
     super("placeholder");
-    this.feedDictionary = feedDictionary;
     Graph.getDefaultInstance().add(this);
   }
 
   @Override
-  public void update()
+  public void update(final FeedDictionary feedDictionary)
   {
     setOutputValue(feedDictionary.get(this).getValue());
   }

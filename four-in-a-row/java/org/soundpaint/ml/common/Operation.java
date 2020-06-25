@@ -65,7 +65,7 @@ public abstract class Operation<U, V> extends Node<U, V>
   abstract public V performOperation();
 
   @Override
-  public void update()
+  public void update(final FeedDictionary feedDictionary)
   {
     inputValues.clear();
     for (final Node<?, U> inputNode : inputNodes) {

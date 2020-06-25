@@ -24,18 +24,20 @@ import java.util.List;
 
 public class Session
 {
-  public Object run(final Node<?, ?> targetNode)
+  public Object run(final Node<?, ?> targetNode,
+                    final FeedDictionary feedDictionary)
   {
     final var targetNodes = new ArrayList<Node<?, ?>>();
     targetNodes.add(targetNode);
-    return run(targetNodes).get(0);
+    return run(targetNodes, feedDictionary).get(0);
   }
 
-  public List<Object> run(final List<Node<?, ?>> targetNodes)
+  public List<Object> run(final List<Node<?, ?>> targetNodes,
+                          final FeedDictionary feedDictionary)
   {
     final List<Node<?, ?>> nodesPostOrder = Node.traversePostOrder(targetNodes);
     for (final Node<?, ?> node : nodesPostOrder) {
-      node.update();
+      node.update(feedDictionary);
       /*
       if (node.getOutputValue() instanceof List) {
         // TODO: convert list into array:

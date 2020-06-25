@@ -61,7 +61,7 @@ public abstract class Node<U, V>
     return outputValue;
   }
 
-  abstract void update();
+  abstract void update(final FeedDictionary feedDictionary);
 
   private void recurse(final List<Node<?, ?>> nodesPostOrder)
   {

@@ -138,7 +138,7 @@ public class Variable<T> extends Node<T, T>
   }
 
   @Override
-  public void update()
+  public void update(final FeedDictionary feedDictionary)
   {
     setOutputValue(getValue());
   }

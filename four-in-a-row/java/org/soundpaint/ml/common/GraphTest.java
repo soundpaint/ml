@@ -31,20 +31,20 @@ public class GraphTest
     final FeedDictionary feedDictionary = new FeedDictionary();
     final var randA = Variable.createRandomUniform(0.0, 100.0, 5, 5);
     final var randB = Variable.createRandomUniform(0.0, 100.0, 5, 1);
-    final var a2 = new Placeholder<Matrix>(feedDictionary);
-    final var b2 = new Placeholder<Matrix>(feedDictionary);
+    final var a2 = new Placeholder<Matrix>();
+    final var b2 = new Placeholder<Matrix>();
     feedDictionary.put(a2, randA);
     feedDictionary.put(b2, randB);
-    final var a = new Placeholder<Double>(feedDictionary);
-    final var b = new Placeholder<Double>(feedDictionary);
+    final var a = new Placeholder<Double>();
+    final var b = new Placeholder<Double>();
     feedDictionary.put(a, 10.0);
     feedDictionary.put(b, 20.0);
     final var addOp = new AddOperation(a, b);
     final var mulOp = new MatrixMultiplyOperation(b2, a2);
     final var session = new Session();
-    final var addResult = session.run(addOp);
+    final var addResult = session.run(addOp, feedDictionary);
     System.out.println(addResult);
-    final var mulResult = session.run(mulOp);
+    final var mulResult = session.run(mulOp, feedDictionary);
     System.out.println(mulResult);
   }
 
@@ -57,12 +57,12 @@ public class GraphTest
     // z = ax + b
     final var a = Variable.create(Math.PI);
     final var b = Variable.create(Math.E);
-    final var x = new Placeholder<Double>(feedDictionary);
+    final var x = new Placeholder<Double>();
     final var y = new MultiplyOperation(a, x);
     final var z = new AddOperation(y, b);
     final var session = new Session();
     feedDictionary.put(x, 100.0);
-    System.out.println(session.run(z));
+    System.out.println(session.run(z, feedDictionary));
   }
 
   private void test2()
@@ -76,12 +76,12 @@ public class GraphTest
       Variable.createMatrix(new double[][] {{1.0, 2.0}, {3.0, 4.0}});
     final var b =
       Variable.createMatrix(new double[][] {{400.0, 300.0}, {200.0, 100.0}});
-    final var x = new Placeholder<Matrix>(feedDictionary);
+    final var x = new Placeholder<Matrix>();
     final var y = new MatrixMultiplyOperation(a, x);
     final var z = new MatrixAddOperation(y, b);
     final var session = new Session();
     feedDictionary.put(x, new Matrix(-1.0));
-    System.out.println(session.run(z));
+    System.out.println(session.run(z, feedDictionary));
   }
 
   private void test3()
@@ -93,7 +93,7 @@ public class GraphTest
 
     final var nFeatures = 10;
     final var nDenseNeurons = 3;
-    final var x = new Placeholder<Matrix>(feedDictionary);
+    final var x = new Placeholder<Matrix>();
     final var w =
       Variable.createRandomNormal(1.0, 0.0, nFeatures, nDenseNeurons);
     final var b = Variable.createOnes(1, nDenseNeurons);
@@ -103,7 +103,7 @@ public class GraphTest
       new ActivationOperation<Matrix>(ActivationFunction.Standard.SIGMOID, z);
     final var session = new Session();
     feedDictionary.put(x, Matrix.createRandomUniform(1, nFeatures, 0.0, 1.0));
-    final var layerOut = session.run(a);
+    final var layerOut = session.run(a, feedDictionary);
     System.out.println(layerOut);
     // expected result: array of array of 3 values between 0 and 1
   }
@@ -124,12 +124,12 @@ public class GraphTest
     final var yLabel = new MatrixAddOperation(yLabel0, yLabel1);
 
     final var session = new Session();
-    session.run(xData);
-    session.run(yLabel);
+    session.run(xData, feedDictionary);
+    session.run(yLabel, feedDictionary);
     final var m = Variable.create(0.44);
     final var b = Variable.create(0.87);
-    session.run(m);
-    session.run(b);
+    session.run(m, feedDictionary);
+    session.run(b, feedDictionary);
     final List<StreamUtils.Pair<Double, Double>> zipped =
       StreamUtils.zipToList(xData.getOutputValue().stream(),
                             yLabel.getOutputValue().stream(),
@@ -143,9 +143,9 @@ public class GraphTest
 
     final var init =
       Graph.getDefaultInstance().createGlobalVariablesInitializer();
-    session.run(init);
+    session.run(init, feedDictionary);
 
-    final List<Object> finalResult = session.run(List.of(m, b));
+    final List<Object> finalResult = session.run(List.of(m, b), feedDictionary);
     final var finalSlope = (Double)finalResult.get(0);
     final var finalIntercept = (Double)finalResult.get(1);
     final var xTest = Variable.createLinearSpace(-1.0, 11.0, 10);
@@ -154,7 +154,7 @@ public class GraphTest
     final var yPredPlot =
       new MatrixAddOperation(new MatrixScaleOperation(finalSlope, xTest),
                              finalIntercept);
-    session.run(yPredPlot);
+    session.run(yPredPlot, feedDictionary);
 
     final Plot plot = new Plot("Linear Regression", "Points Before Regression");
     plot.plot(xTest, yPredPlot, Plot.Mode.LINE, Color.RED);
