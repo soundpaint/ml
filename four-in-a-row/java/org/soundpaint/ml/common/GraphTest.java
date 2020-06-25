@@ -23,7 +23,33 @@ import java.util.List;
 
 public class GraphTest
 {
-  private void test1() {
+  private void test0()
+  {
+    System.out.println("running test #0");
+    Graph.getDefaultInstance().clear();
+    RandomUtils.getRandom().setSeed(101);
+    final FeedDictionary feedDictionary = new FeedDictionary();
+    final var randA = Variable.createRandomUniform(0.0, 100.0, 5, 5);
+    final var randB = Variable.createRandomUniform(0.0, 100.0, 5, 1);
+    final var a2 = new Placeholder<Matrix>(feedDictionary);
+    final var b2 = new Placeholder<Matrix>(feedDictionary);
+    feedDictionary.put(a2, randA);
+    feedDictionary.put(b2, randB);
+    final var a = new Placeholder<Double>(feedDictionary);
+    final var b = new Placeholder<Double>(feedDictionary);
+    feedDictionary.put(a, 10.0);
+    feedDictionary.put(b, 20.0);
+    final var addOp = new AddOperation(a, b);
+    final var mulOp = new MatrixMultiplyOperation(b2, a2);
+    final var session = new Session();
+    final var addResult = session.run(addOp);
+    System.out.println(addResult);
+    final var mulResult = session.run(mulOp);
+    System.out.println(mulResult);
+  }
+
+  private void test1()
+  {
     System.out.println("running test #1");
     Graph.getDefaultInstance().clear();
     final FeedDictionary feedDictionary = new FeedDictionary();
@@ -39,7 +65,8 @@ public class GraphTest
     System.out.println(session.run(z));
   }
 
-  private void test2() {
+  private void test2()
+  {
     System.out.println("running test #2");
     Graph.getDefaultInstance().clear();
     final FeedDictionary feedDictionary = new FeedDictionary();
@@ -57,7 +84,8 @@ public class GraphTest
     System.out.println(session.run(z));
   }
 
-  private void test3() {
+  private void test3()
+  {
     System.out.println("running test #3");
     Graph.getDefaultInstance().clear();
     RandomUtils.getRandom().setSeed(101);
@@ -80,7 +108,8 @@ public class GraphTest
     // expected result: array of array of 3 values between 0 and 1
   }
 
-  private void test4() {
+  private void test4()
+  {
     System.out.println("running test #4");
     Graph.getDefaultInstance().clear();
     RandomUtils.getRandom().setSeed(101);
@@ -133,7 +162,8 @@ public class GraphTest
     plot.show();
   }
 
-  private void test5() {
+  private void test5()
+  {
     System.out.println("running test #5");
     Graph.getDefaultInstance().clear();
     RandomUtils.getRandom().setSeed(101);
@@ -155,6 +185,7 @@ public class GraphTest
   {
     final GraphTest graphTest = new GraphTest();
     System.out.println("running all tests");
+    graphTest.test0();
     graphTest.test1();
     graphTest.test2();
     graphTest.test3();

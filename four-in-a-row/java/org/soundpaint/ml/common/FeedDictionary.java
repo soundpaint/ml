@@ -29,15 +29,21 @@ public class FeedDictionary
     dictionary = new HashMap<>();
   }
 
-  public <T>T put(final Placeholder<T> key,
-                  final T value)
+  public <T>Variable<T> put(final Placeholder<T> key,
+                            final T value)
   {
-    return (T)dictionary.put(key, value);
+    return put(key, new Variable<T>(value));
   }
 
-  public <T>T get(final Placeholder<T> key)
+  public <T>Variable<T> put(final Placeholder<T> key,
+                            final Variable<T> value)
   {
-    return (T)dictionary.get(key);
+    return (Variable<T>)dictionary.put(key, value);
+  }
+
+  public <T>Variable<T> get(final Placeholder<T> key)
+  {
+    return (Variable<T>)dictionary.get(key);
   }
 
   public <T>void remove(final Placeholder<T> key)

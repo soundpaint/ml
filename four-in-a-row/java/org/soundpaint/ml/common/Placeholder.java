@@ -34,7 +34,7 @@ public class Placeholder<T> extends Node<T, T>
   @Override
   public void update()
   {
-    setOutputValue(feedDictionary.get(this));
+    setOutputValue(feedDictionary.get(this).getValue());
   }
 }
 
