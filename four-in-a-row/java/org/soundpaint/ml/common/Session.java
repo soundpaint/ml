@@ -18,18 +18,15 @@
  */
 package org.soundpaint.ml.common;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Session
 {
   public Object run(final Node<?, ?> targetNode,
                     final FeedDictionary feedDictionary)
   {
-    final var targetNodes = new ArrayList<Node<?, ?>>();
-    targetNodes.add(targetNode);
-    return run(targetNodes, feedDictionary).get(0);
+    return run(List.of(targetNode), feedDictionary).get(0);
   }
 
   public List<Object> run(final List<Node<?, ?>> targetNodes,
@@ -45,11 +42,9 @@ public class Session
       }
       */
     }
-    final List<Object> result = new ArrayList<Object>();
-    for (final Node<?, ?> targetNode : targetNodes) {
-      result.add(targetNode.getOutputValue());
-    }
-    return result;
+    return
+      targetNodes.stream().
+      map(Node<?, ?>::getOutputValue).collect(Collectors.toList());
   }
 }
 

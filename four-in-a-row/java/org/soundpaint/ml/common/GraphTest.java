@@ -123,27 +123,32 @@ public class GraphTest
     final var yLabel1 = Variable.createRandomUniform(-1.5, 1.5, 11);
     final var yLabel = new MatrixAddOperation(yLabel0, yLabel1);
 
-    final var session = new Session();
-    session.run(xData, feedDictionary);
-    session.run(yLabel, feedDictionary);
     final var m = Variable.create(0.44);
     final var b = Variable.create(0.87);
-    session.run(m, feedDictionary);
-    session.run(b, feedDictionary);
-    final List<StreamUtils.Pair<Double, Double>> zipped =
-      StreamUtils.zipToList(xData.getOutputValue().stream(),
-                            yLabel.getOutputValue().stream(),
-                            new StreamUtils.PairFactory<Double,Double>());
-    double error = 0.0;
-    for (var pair : zipped) {
-      final double yHat = m.getOutputValue() * pair.a + b.getOutputValue();
-      error += Math.pow(pair.b - yHat, 2);
-    }
-    System.out.println("error=" + error);
 
+    final var session = new Session();
+    session.run(List.of(xData, yLabel, m, b), feedDictionary);
+
+    var error =
+      new Operation<Matrix, Double>("errorop", List.of()) {
+        public Double performOperation()
+        {
+          final List<StreamUtils.Pair<Double, Double>> zipped =
+          StreamUtils.zipToList(xData.getOutputValue().stream(),
+                                yLabel.getOutputValue().stream(),
+                                new StreamUtils.PairFactory<Double,Double>());
+          double error = 0.0;
+          for (var pair : zipped) {
+            final double yHat = m.getOutputValue() * pair.a + b.getOutputValue();
+            error += Math.pow(pair.b - yHat, 2);
+          }
+          return error;
+        }
+      };
     final var init =
       Graph.getDefaultInstance().createGlobalVariablesInitializer();
-    session.run(init, feedDictionary);
+    session.run(List.of(init, error), feedDictionary);
+    System.out.println("error=" + error.getOutputValue());
 
     final List<Object> finalResult = session.run(List.of(m, b), feedDictionary);
     final var finalSlope = (Double)finalResult.get(0);

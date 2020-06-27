@@ -24,7 +24,7 @@ import java.util.List;
 public abstract class Node<U, V>
 {
   private final String id;
-  private List<Operation<V, ?>> operations;
+  private final List<Operation<V, ?>> operations;
   private V outputValue;
 
   public Node()
