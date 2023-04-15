@@ -27,6 +27,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -34,10 +36,21 @@ import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
+import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
 import javax.json.JsonValue;
+import javax.json.stream.JsonGenerator;
 
 public class GameSerializer
 {
+  private static final JsonWriterFactory writerFactory;
+
+  static {
+    final Map<String, Object> properties = new HashMap<>(1);
+    properties.put(JsonGenerator.PRETTY_PRINTING, true);
+    writerFactory = Json.createWriterFactory(properties);
+  }
+
   public static void serializeToFile(final GameModel game,
                                      final File file)
     throws IOException
@@ -89,13 +102,18 @@ public class GameSerializer
       }
       gameDraws.add(column);
     }
-    final JsonObjectBuilder obj = Json.createObjectBuilder()
+    final JsonObject jsonObj = Json.createObjectBuilder()
       .add("id", game.getId())
       .add("rows", game.getRows())
       .add("columns", game.getColumns())
       .add("min-match-count", game.getMinMatchCount())
-      .add("draws", gameDraws);
-      return obj.build().toString();
+      .add("draws", gameDraws)
+      .build();
+    final StringWriter stringWriter = new StringWriter();
+    final JsonWriter jsonWriter = writerFactory.createWriter(stringWriter);
+    jsonWriter.writeObject(jsonObj);
+    jsonWriter.close();
+    return stringWriter.toString();
   }
 
   public static GameModel deserializeFromFile(final File file)
