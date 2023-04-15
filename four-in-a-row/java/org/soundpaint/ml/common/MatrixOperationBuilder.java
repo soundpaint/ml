@@ -1,7 +1,7 @@
 /*
- * @(#)Placeholder.java 1.00 20/03/08
+ * @(#)MatrixOperationBuilder.java 1.00 23/04/15
  *
- * Copyright (C) 2020 Jürgen Reuter
+ * Copyright (C) 2023 Jürgen Reuter
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,36 +18,28 @@
  */
 package org.soundpaint.ml.common;
 
-import java.util.HashMap;
-
-public class Placeholder<T> extends Node<T, T>
+public class MatrixOperationBuilder extends OperationBuilder<Matrix, Matrix>
 {
-  private int batchSize;
+  private final Node<Matrix, Matrix> operand;
 
-  public Placeholder()
+  private MatrixOperationBuilder(final Node<Matrix, Matrix> operand)
   {
-    this(1);
-  }
-
-  public Placeholder(final int batchSize)
-  {
-    super("placeholder");
-    if (batchSize < 1) {
-      throw new IllegalArgumentException("batchSize < 1");
-    }
-    this.batchSize = batchSize;
-    Graph.getDefaultInstance().add(this);
-  }
-
-  public int getBatchSize()
-  {
-    return batchSize;
+    this.operand = operand;
   }
 
   @Override
-  public void update(final FeedDictionary feedDictionary)
+  public Node<Matrix, Matrix> getOperand() {
+    return operand;
+  }
+
+  public static MatrixOperationBuilder fromNode(final Node<Matrix, Matrix> operand)
   {
-    setOutputValue(feedDictionary.get(this).getValue());
+    return new MatrixOperationBuilder(operand);
+  }
+
+  public MatrixOperationBuilder reduceSum()
+  {
+    return fromNode(new MatrixReduceSumOperation(operand));
   }
 }
 

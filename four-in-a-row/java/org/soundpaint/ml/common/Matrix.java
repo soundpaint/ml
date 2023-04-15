@@ -386,6 +386,17 @@ public class Matrix implements Iterable<Double>
     }
   }
 
+  public Matrix reduceSum()
+  {
+    double sum = 0.0;
+    for (int row = 0; row < rows; row++) {
+      for (int column = 0; column < columns; column++) {
+        sum += elements[row][column];
+      }
+    }
+    return new Matrix(new double[][] {{ sum }});
+  }
+
   public Matrix sample(final Direction direction,
                        final int count)
   {

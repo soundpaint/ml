@@ -184,6 +184,28 @@ public class GraphTest
     final var mySampleData = myData.sample(Matrix.Direction.VERTICAL, 250);
     System.out.println(mySampleData);
     mySampleData.plot(0, 1, Matrix.Direction.VERTICAL);
+    final var batchSize = 8;
+    final var m = Variable.create(0.81);
+    final var b = Variable.create(0.17);
+
+    // Note: We currently do *not* support specifying batch sizes by
+    // abusing a Placeholder constructor's shape argument, as commonly
+    // done in TensorFlow, but still support a batch size argument as
+    // dummy value for compatibility and maybe future extension.  That
+    // is, for now, we create placeholders xph and yph as standard
+    // scalar value containers, without passing a pseudo shape
+    // argument into the constructor.
+    final var xph = new Placeholder<Double>(batchSize);
+    final var yph = new Placeholder<Double>(batchSize);
+
+    final var y_model = new AddOperation(new MultiplyOperation(m, xph), b);
+    final var error =
+      OperationBuilder
+      .fromDoubleNode(yph)
+      .sub(OperationBuilder.fromDoubleNode(y_model))
+      .square()
+      .asMatrix()
+      .reduceSum();
   }
 
   public static void main(final String argv[])

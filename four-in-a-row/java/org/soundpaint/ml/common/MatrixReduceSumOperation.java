@@ -1,5 +1,5 @@
 /*
- * @(#)Placeholder.java 1.00 20/03/08
+ * @(#)MatrixReduceSumOperation.java 1.00 20/06/25
  *
  * Copyright (C) 2020 Jürgen Reuter
  *
@@ -18,36 +18,27 @@
  */
 package org.soundpaint.ml.common;
 
-import java.util.HashMap;
+import java.util.List;
 
-public class Placeholder<T> extends Node<T, T>
+public class MatrixReduceSumOperation extends Operation<Matrix, Matrix>
 {
-  private int batchSize;
-
-  public Placeholder()
+  public MatrixReduceSumOperation(final Matrix x)
   {
-    this(1);
+    this(new Variable<Matrix>(x));
   }
 
-  public Placeholder(final int batchSize)
+  public MatrixReduceSumOperation(final Node<Matrix, Matrix> x)
   {
-    super("placeholder");
-    if (batchSize < 1) {
-      throw new IllegalArgumentException("batchSize < 1");
+    super("matrixreducesumop", List.of(x));
+  }
+
+  public Matrix performOperation()
+  {
+    if (inputValues.size() != 1) {
+      throw new IllegalArgumentException("require 1 operand, got: " +
+                                         inputValues.size());
     }
-    this.batchSize = batchSize;
-    Graph.getDefaultInstance().add(this);
-  }
-
-  public int getBatchSize()
-  {
-    return batchSize;
-  }
-
-  @Override
-  public void update(final FeedDictionary feedDictionary)
-  {
-    setOutputValue(feedDictionary.get(this).getValue());
+    return inputValues.get(1).reduceSum();
   }
 }
 
